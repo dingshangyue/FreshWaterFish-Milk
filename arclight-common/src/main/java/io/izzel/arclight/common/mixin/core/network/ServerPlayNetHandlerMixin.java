@@ -172,6 +172,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
@@ -1950,5 +1951,9 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
     @Override
     public void bridge$teleport(Location dest) {
         teleport(dest);
+    }
+
+    public SocketAddress getRawAddress() {
+        return this.connection.channel.remoteAddress();
     }
 }
