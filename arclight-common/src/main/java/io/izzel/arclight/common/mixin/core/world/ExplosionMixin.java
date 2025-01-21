@@ -7,6 +7,7 @@ import io.izzel.arclight.common.bridge.core.entity.EntityBridge;
 import io.izzel.arclight.common.bridge.core.world.ExplosionBridge;
 import io.izzel.arclight.common.bridge.core.world.WorldBridge;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -259,6 +260,7 @@ public abstract class ExplosionMixin implements ExplosionBridge {
             ObjectArrayList<Pair<ItemStack, BlockPos>> objectarraylist = new ObjectArrayList<>();
             boolean flag2 = this.getIndirectSourceEntity() instanceof Player;
             Util.shuffle(this.toBlow, this.level.random);
+            var iterator = this.toBlow.iterator();
 
             float yield = this.callBlockExplodeEvent();
 
@@ -267,7 +269,8 @@ public abstract class ExplosionMixin implements ExplosionBridge {
                 return;
             }
 
-            for (BlockPos blockpos : this.toBlow) {
+            while (iterator.hasNext()) {
+                BlockPos blockpos = iterator.next();
                 BlockState blockstate = this.level.getBlockState(blockpos);
                 Block block = blockstate.getBlock();
                 // CraftBukkit start - TNTPrimeEvent
