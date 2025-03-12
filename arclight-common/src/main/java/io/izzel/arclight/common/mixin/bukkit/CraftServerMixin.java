@@ -2,9 +2,11 @@ package io.izzel.arclight.common.mixin.bukkit;
 
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
+import com.google.common.collect.Lists;
 import io.izzel.arclight.common.bridge.bukkit.CraftServerBridge;
 import io.izzel.arclight.common.bridge.core.world.WorldBridge;
 import io.izzel.arclight.common.mod.server.ArclightServer;
+import io.izzel.arclight.common.bridge.core.entity.player.ServerPlayerEntityBridge;
 import jline.console.ConsoleReader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.dedicated.DedicatedPlayerList;
@@ -21,6 +23,7 @@ import org.bukkit.craftbukkit.v.CraftServer;
 import org.bukkit.craftbukkit.v.command.CraftBlockCommandSender;
 import org.bukkit.craftbukkit.v.command.CraftCommandMap;
 import org.bukkit.craftbukkit.v.entity.CraftEntity;
+import org.bukkit.craftbukkit.v.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v.help.SimpleHelpMap;
 import org.bukkit.craftbukkit.v.scheduler.CraftScheduler;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -44,9 +47,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,6 +63,7 @@ public abstract class CraftServerMixin implements CraftServerBridge {
     @Shadow @Final protected DedicatedServer console;
     @Shadow @Final @Mutable private String serverName;
     @Shadow @Final @Mutable protected DedicatedPlayerList playerList;
+    @Shadow @Final @Mutable private List<CraftPlayer> playerView;
     @Shadow @Final private Map<String, World> worlds;
     @Shadow public int reloadCount;
     @Shadow private YamlConfiguration configuration;
@@ -77,6 +79,7 @@ public abstract class CraftServerMixin implements CraftServerBridge {
     @Shadow public abstract void loadPlugins();
     @Shadow public abstract void enablePlugins(PluginLoadOrder type);
     @Shadow public abstract PluginManager getPluginManager();
+    @Shadow@Final private String serverVersion;
     @Accessor("logger") @Mutable public abstract void setLogger(Logger logger);
     // @formatter:on
 
@@ -97,6 +100,9 @@ public abstract class CraftServerMixin implements CraftServerBridge {
     @Override
     public void bridge$setPlayerList(PlayerList playerList) {
         this.playerList = (DedicatedPlayerList) playerList;
+        this.playerView = Collections.unmodifiableList(Lists.transform(playerList.players, player ->
+                ((ServerPlayerEntityBridge)player).bridge$getBukkitEntity()
+                ));
     }
 
     /**

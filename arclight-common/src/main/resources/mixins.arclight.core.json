@@ -74,6 +74,7 @@
     "server.level.ServerLevelMixin",
     "server.level.TicketTypeMixin",
     "server.management.BanEntryMixin",
+    "server.management.DedicatedPlayerListMixin",
     "server.management.PlayerListMixin",
     "server.management.ServerPlayerGameModeMixin",
     "server.management.UserListMixin",
