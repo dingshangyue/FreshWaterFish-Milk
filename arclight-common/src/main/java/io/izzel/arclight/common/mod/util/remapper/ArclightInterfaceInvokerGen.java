@@ -22,8 +22,10 @@ public class ArclightInterfaceInvokerGen implements PluginTransformer {
     private static final String PREFIX = "net/minecraft/";
 
     @Override
-    public void handleClass(ClassNode node, ClassLoaderRemapper remapper) {
-        generate(node, remapper, GlobalClassRepo.inheritanceProvider());
+    public void handleClass(ClassNode node, ClassLoaderRemapper remapper, ArclightRemapConfig config) {
+        if (config.remap()) {
+            generate(node, remapper, GlobalClassRepo.inheritanceProvider());
+        }
     }
 
     private static void generate(ClassNode classNode, ClassLoaderRemapper remapper, InheritanceProvider inheritanceProvider) {

@@ -6,6 +6,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import io.izzel.arclight.api.Unsafe;
+import io.izzel.arclight.common.mod.ArclightMod;
 import io.izzel.arclight.common.mod.util.remapper.generated.ArclightReflectionHandler;
 import io.izzel.arclight.i18n.ArclightConfig;
 import io.izzel.tools.product.Product;
@@ -299,10 +300,10 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
             }));
     }
 
-    public Product2<byte[], CodeSource> remapClass(String className, Callable<byte[]> byteSource, URLConnection connection) throws ClassNotFoundException {
+    public Product2<byte[], CodeSource> remapClass(String className, Callable<byte[]> byteSource, URLConnection connection, ArclightRemapConfig config) throws ClassNotFoundException {
         try {
             ArclightClassCache.CacheSegment segment = ArclightClassCache.instance().makeSegment(connection);
-            Optional<byte[]> optional = segment.findByName(className);
+            Optional<byte[]> optional = segment.findByName(className, config);
             if (optional.isPresent()) {
                 byte[] bytes = optional.get();
                 ClassWriter cw = new ClassWriter(0);
@@ -323,12 +324,12 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
                 }
                 return Product.of(cw.toByteArray(), new CodeSource(url, signers));
             } else {
-                byte[] bytes = remapClassFile(byteSource.call(), GlobalClassRepo.INSTANCE);
+                byte[] bytes = remapClassFile(byteSource.call(), new ClassRepoWrapper(GlobalClassRepo.INSTANCE, config));
                 if (ArclightConfig.spec().getOptimization().isCachePluginClass()) {
                     ClassWriter cw = new ClassWriter(0);
                     new ClassReader(bytes).accept(new ClassRemapper(cw, new GeneratedHandlerAdapter(generatedHandler, REPLACED_NAME)), 0);
                     byte[] store = cw.toByteArray();
-                    segment.addToCache(className, store);
+                    segment.addToCache(className, store, config);
                 }
                 URL url;
                 CodeSigner[] signers;
@@ -360,9 +361,16 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
         ClassNode node = new ClassNode();
         RemappingClassAdapter mapper = new RemappingClassAdapter(node, this, repo);
         reader.accept(mapper, 0);
+        ArclightRemapConfig config;
+        if (repo instanceof ClassRepoWrapper wrapper) {
+            config = wrapper.config();
+        } else {
+            ArclightMod.LOGGER.warn("No class remap config is provided for class {}, using PLUGIN", node.name.replace('/','.'));
+            config = ArclightRemapConfig.PLUGIN;
+        }
 
         for (PluginTransformer transformer : ArclightRemapper.INSTANCE.getTransformerList()) {
-            transformer.handleClass(node, this);
+            transformer.handleClass(node, this, config);
         }
 
         ClassWriter wr = new PluginClassWriter(ClassWriter.COMPUTE_MAXS);
@@ -385,7 +393,6 @@ public class ClassLoaderRemapper extends LenientJarRemapper {
             dump(bytes);
             Class<?> cl = Unsafe.defineClass(name.replace('/', '.'), bytes, 0, bytes.length, getClass().getClassLoader(), getClass().getProtectionDomain());
             Unsafe.ensureClassInitialized(cl);
-
             Field remapper = cl.getField("remapper");
             remapper.set(null, this);
             return cl;

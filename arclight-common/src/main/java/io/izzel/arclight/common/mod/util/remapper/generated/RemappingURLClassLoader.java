@@ -1,6 +1,7 @@
 package io.izzel.arclight.common.mod.util.remapper.generated;
 
 import com.google.common.io.ByteStreams;
+import io.izzel.arclight.common.mod.util.remapper.ArclightRemapConfig;
 import io.izzel.arclight.common.mod.util.remapper.ArclightRemapper;
 import io.izzel.arclight.common.mod.util.remapper.ClassLoaderRemapper;
 import io.izzel.arclight.common.mod.util.remapper.RemappingClassLoader;
@@ -23,24 +24,27 @@ public class RemappingURLClassLoader extends URLClassLoader implements Remapping
         ClassLoader.registerAsParallelCapable();
     }
 
+    // Sample using remap config
+    public ArclightRemapConfig config = new ArclightRemapConfig(RemappingClassLoader.needRemap(this));
+
     public RemappingURLClassLoader(URL[] urls, ClassLoader parent) {
-        super(urls, RemappingClassLoader.asTransforming(parent));
+        super(urls, RemappingClassLoader.tryRedirect(parent));
     }
 
     public RemappingURLClassLoader(URL[] urls) {
-        super(urls, RemappingClassLoader.asTransforming(null));
+        super(urls, RemappingClassLoader.tryRedirect(null));
     }
 
     public RemappingURLClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(urls, RemappingClassLoader.asTransforming(parent), factory);
+        super(urls, RemappingClassLoader.tryRedirect(parent), factory);
     }
 
     public RemappingURLClassLoader(String name, URL[] urls, ClassLoader parent) {
-        super(name, urls, RemappingClassLoader.asTransforming(parent));
+        super(name, urls, RemappingClassLoader.tryRedirect(parent));
     }
 
     public RemappingURLClassLoader(String name, URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(name, urls, RemappingClassLoader.asTransforming(parent), factory);
+        super(name, urls, RemappingClassLoader.tryRedirect(parent), factory);
     }
 
     @Override
@@ -71,7 +75,7 @@ public class RemappingURLClassLoader extends URLClassLoader implements Remapping
                 throw new ClassNotFoundException(name, e);
             }
 
-            Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection);
+            Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection, config);
 
             int i = name.lastIndexOf('.');
             if (i != -1) {
@@ -100,5 +104,10 @@ public class RemappingURLClassLoader extends URLClassLoader implements Remapping
             remapper = ArclightRemapper.createClassLoaderRemapper(this);
         }
         return remapper;
+    }
+
+    @Override
+    public ArclightRemapConfig getRemapConfig() {
+        return config;
     }
 }

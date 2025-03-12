@@ -3,6 +3,7 @@ package io.izzel.arclight.common.mixin.bukkit;
 import com.google.common.io.ByteStreams;
 import cpw.mods.modlauncher.EnumerationHelper;
 import io.izzel.arclight.common.bridge.bukkit.JavaPluginLoaderBridge;
+import io.izzel.arclight.common.mod.util.remapper.ArclightRemapConfig;
 import io.izzel.arclight.common.mod.util.remapper.ArclightRemapper;
 import io.izzel.arclight.common.mod.util.remapper.ClassLoaderRemapper;
 import io.izzel.arclight.common.mod.util.remapper.RemappingClassLoader;
@@ -46,6 +47,11 @@ public class PluginClassLoaderMixin extends URLClassLoader implements RemappingC
             remapper = ArclightRemapper.createClassLoaderRemapper(this);
         }
         return remapper;
+    }
+
+    @Override
+    public ArclightRemapConfig getRemapConfig() {
+        return ArclightRemapConfig.PLUGIN;
     }
 
     public PluginClassLoaderMixin(URL[] urls) {
@@ -120,7 +126,7 @@ public class PluginClassLoaderMixin extends URLClassLoader implements RemappingC
                     throw new ClassNotFoundException(name, e);
                 }
 
-                Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection);
+                Product2<byte[], CodeSource> classBytes = this.getRemapper().remapClass(name, byteSource, connection, ArclightRemapConfig.PLUGIN);
 
                 int dot = name.lastIndexOf('.');
                 if (dot != -1) {

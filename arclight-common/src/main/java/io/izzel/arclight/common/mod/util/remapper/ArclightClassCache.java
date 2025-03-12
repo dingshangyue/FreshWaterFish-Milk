@@ -6,20 +6,13 @@ import cpw.mods.modlauncher.api.LamdbaExceptionUtils;
 import io.izzel.arclight.api.PluginPatcher;
 import io.izzel.arclight.common.mod.ArclightMod;
 import io.izzel.arclight.i18n.ArclightConfig;
-import io.izzel.tools.product.Product;
-import io.izzel.tools.product.Product2;
-import io.izzel.tools.product.Product4;
+import io.izzel.tools.product.*;
 import net.minecraftforge.fml.ModList;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
@@ -49,9 +42,9 @@ public abstract class ArclightClassCache implements AutoCloseable {
 
     public interface CacheSegment {
 
-        Optional<byte[]> findByName(String name) throws IOException;
+        Optional<byte[]> findByName(String name, ArclightRemapConfig config) throws IOException;
 
-        void addToCache(String name, byte[] value);
+        void addToCache(String name, byte[] value, ArclightRemapConfig config);
 
         void save() throws IOException;
     }
@@ -65,6 +58,8 @@ public abstract class ArclightClassCache implements AutoCloseable {
 
     private static class Impl extends ArclightClassCache {
 
+        private static final int SPEC_VERSION = 2;
+
         private final boolean enabled = ArclightConfig.spec().getOptimization().isCachePluginClass();
         private final ConcurrentHashMap<String, JarSegment> map = new ConcurrentHashMap<>();
         private final Path basePath = Paths.get(".arclight/class_cache");
@@ -75,12 +70,18 @@ public abstract class ArclightClassCache implements AutoCloseable {
             var arclight = ModList.get().getModContainerById("arclight")
                 .orElseThrow(IllegalStateException::new).getModInfo().getVersion().toString();
             builder.append(arclight);
+            builder.append("Arclight class cache").append(", ");
+            builder.append("spec=").append(SPEC_VERSION).append(", ");
+            builder.append("arclight=").append(arclight).append(", ");
+            builder.append("patcher=[");
             for (PluginPatcher patcher : ArclightRemapper.INSTANCE.getPatchers()) {
                 builder.append('\0')
                     .append(patcher.getClass().getName())
                     .append('\0')
-                    .append(patcher.version());
+                    .append(patcher.version())
+                    .append(", ");
             }
+            builder.append("]");
             return builder.toString();
         }
 
@@ -177,8 +178,8 @@ public abstract class ArclightClassCache implements AutoCloseable {
 
         private class JarSegment implements CacheSegment {
 
-            private final Map<String, Product2<Long, Integer>> rangeMap = new ConcurrentHashMap<>();
-            private final ConcurrentLinkedQueue<Product4<String, byte[], Long, Integer>> savingQueue = new ConcurrentLinkedQueue<>();
+            private final Map<String, Product3<Long, Integer, ArclightRemapConfig>> rangeMap = new ConcurrentHashMap<>();
+            private final ConcurrentLinkedQueue<Product5<String, byte[], Long, Integer, ArclightRemapConfig>> savingQueue = new ConcurrentLinkedQueue<>();
             private final AtomicLong sizeAllocator;
             private final Path indexPath, blobPath;
 
@@ -200,11 +201,15 @@ public abstract class ArclightClassCache implements AutoCloseable {
             }
 
             @Override
-            public Optional<byte[]> findByName(String name) throws IOException {
-                Product2<Long, Integer> product2 = rangeMap.get(name);
-                if (product2 != null) {
-                    long off = product2._1;
-                    int len = product2._2;
+            public Optional<byte[]> findByName(String name, ArclightRemapConfig config) throws IOException {
+                Product3<Long, Integer, ArclightRemapConfig> product = rangeMap.get(name);
+                if (product != null) {
+                    long off = product._1;
+                    int len = product._2;
+                    var cfg = product._3;
+                    if (!cfg.equals(config)) {
+                        return Optional.empty();
+                    }
                     try (SeekableByteChannel channel = Files.newByteChannel(blobPath)) {
                         channel.position(off);
                         ByteBuffer buffer = ByteBuffer.allocate(len);
@@ -217,29 +222,30 @@ public abstract class ArclightClassCache implements AutoCloseable {
             }
 
             @Override
-            public void addToCache(String name, byte[] value) {
+            public void addToCache(String name, byte[] value, ArclightRemapConfig config) {
                 int len = value.length;
                 long off = sizeAllocator.getAndAdd(len);
-                savingQueue.add(Product.of(name, value, off, len));
+                savingQueue.add(Product.of(name, value, off, len, config.copy()));
             }
 
             @Override
             public synchronized void save() throws IOException {
                 if (savingQueue.isEmpty()) return;
-                List<Product4<String, byte[], Long, Integer>> list = new ArrayList<>();
+                List<Product5<String, byte[], Long, Integer, ArclightRemapConfig>> list = new ArrayList<>();
                 while (!savingQueue.isEmpty()) {
                     list.add(savingQueue.poll());
                 }
                 try (OutputStream outIndex = Files.newOutputStream(indexPath, StandardOpenOption.APPEND);
                      DataOutputStream dataOutIndex = new DataOutputStream(outIndex);
                      SeekableByteChannel channel = Files.newByteChannel(blobPath, StandardOpenOption.WRITE)) {
-                    for (Product4<String, byte[], Long, Integer> product4 : list) {
-                        channel.position(product4._3);
-                        channel.write(ByteBuffer.wrap(product4._2));
-                        dataOutIndex.writeUTF(product4._1);
-                        dataOutIndex.writeLong(product4._3);
-                        dataOutIndex.writeInt(product4._4);
-                        rangeMap.put(product4._1, Product.of(product4._3, product4._4));
+                    for (Product5<String, byte[], Long, Integer, ArclightRemapConfig> product : list) {
+                        channel.position(product._3);
+                        channel.write(ByteBuffer.wrap(product._2));
+                        dataOutIndex.writeUTF(product._1);
+                        dataOutIndex.writeLong(product._3);
+                        dataOutIndex.writeInt(product._4);
+                        product._5.write(dataOutIndex);
+                        rangeMap.put(product._1, Product.of(product._3, product._4, product._5));
                     }
                 }
             }
@@ -251,7 +257,8 @@ public abstract class ArclightClassCache implements AutoCloseable {
                         String name = dataIn.readUTF();
                         long off = dataIn.readLong();
                         int len = dataIn.readInt();
-                        rangeMap.put(name, Product.of(off, len));
+                        var cfg = ArclightRemapConfig.read(dataIn);
+                        rangeMap.put(name, Product.of(off, len, cfg));
                     }
                 }
             }
@@ -260,12 +267,12 @@ public abstract class ArclightClassCache implements AutoCloseable {
         private static class EmptySegment implements CacheSegment {
 
             @Override
-            public Optional<byte[]> findByName(String name) {
+            public Optional<byte[]> findByName(String name, ArclightRemapConfig config) {
                 return Optional.empty();
             }
 
             @Override
-            public void addToCache(String name, byte[] value) {
+            public void addToCache(String name, byte[] value, ArclightRemapConfig config) {
             }
 
             @Override

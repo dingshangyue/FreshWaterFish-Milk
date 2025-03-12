@@ -43,8 +43,8 @@ public class ArclightDummyCommandSender extends ArclightDummyPermissible impleme
 
         @Override
         public void sendMessage(@NotNull BaseComponent component) {
-            var json = ComponentSerializer.toJson(component);
-            var result = Component.Serializer.fromJson(json, stack.getServer().registryAccess());
+            var json = ComponentSerializer.toString(component);
+            var result = Component.Serializer.fromJson(json);
             if (result != null) {
                 stack.sendSystemMessage(result);
             }

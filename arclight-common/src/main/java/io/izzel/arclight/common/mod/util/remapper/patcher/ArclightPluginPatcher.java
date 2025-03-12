@@ -2,6 +2,7 @@ package io.izzel.arclight.common.mod.util.remapper.patcher;
 
 import io.izzel.arclight.api.PluginPatcher;
 import io.izzel.arclight.common.mod.ArclightMod;
+import io.izzel.arclight.common.mod.util.remapper.ArclightRemapConfig;
 import io.izzel.arclight.common.mod.util.remapper.ClassLoaderRemapper;
 import io.izzel.arclight.common.mod.util.remapper.GlobalClassRepo;
 import io.izzel.arclight.common.mod.util.remapper.PluginTransformer;
@@ -30,7 +31,7 @@ public class ArclightPluginPatcher implements PluginTransformer {
     }
 
     @Override
-    public void handleClass(ClassNode node, ClassLoaderRemapper remapper) {
+    public void handleClass(ClassNode node, ClassLoaderRemapper remapper, ArclightRemapConfig config) {
         for (PluginPatcher patcher : list) {
             patcher.handleClass(node, GlobalClassRepo.INSTANCE);
         }
