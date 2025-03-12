@@ -20,12 +20,12 @@ jobs:
       with:
         java-version: '17'
     - name: Cache Gradle User Files
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ~/.gradle
         key: ${{ runner.os }}-gradle-user-home
     - name: Cache Gradle Files
-      uses: actions/cache@v1
+      uses: actions/cache@v4
       with:
         path: ./.gradle
         key: ${{ runner.os }}-gradle-file
