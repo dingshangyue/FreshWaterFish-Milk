@@ -3,6 +3,7 @@ package io.izzel.arclight.common.mixin.core.world.entity.vehicle;
 import io.izzel.arclight.common.bridge.core.entity.EntityBridge;
 import io.izzel.arclight.common.bridge.core.world.WorldBridge;
 import io.izzel.arclight.common.mixin.core.world.entity.EntityMixin;
+import io.izzel.arclight.mixin.Eject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.PoweredRailBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.extensions.IForgeAbstractMinecart;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Vehicle;
@@ -36,11 +38,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
 @Mixin(AbstractMinecart.class)
-public abstract class AbstractMinecartMixin extends EntityMixin {
+public abstract class AbstractMinecartMixin extends EntityMixin implements IForgeAbstractMinecart {
 
     // @formatter:off
     @Shadow public abstract void setHurtDir(int rollingDirection);
@@ -60,7 +63,6 @@ public abstract class AbstractMinecartMixin extends EntityMixin {
     @Shadow public abstract void activateMinecart(int x, int y, int z, boolean receivingPower);
     @Shadow private boolean flipped;
     @Shadow public abstract AbstractMinecart.Type getMinecartType();
-    @Shadow(remap = false) public abstract boolean canUseRail();
     @Shadow private boolean onRails;
     // @formatter:on
 
@@ -130,129 +132,58 @@ public abstract class AbstractMinecartMixin extends EntityMixin {
 
     private transient Location arclight$prevLocation;
 
-    /**
-     * @author IzzelAliz
-     * @reason
-     */
-    @Overwrite
-    public void tick() {
-        this.arclight$prevLocation = new Location(null, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
-        if (this.getHurtTime() > 0) {
-            this.setHurtTime(this.getHurtTime() - 1);
-        }
-        if (this.getDamage() > 0.0f) {
-            this.setDamage(this.getDamage() - 1.0f);
-        }
-        this.checkBelowWorld();
-        if (this.level().isClientSide) {
-            if (this.lSteps > 0) {
-                double d0 = this.getX() + (this.lx - this.getX()) / this.lSteps;
-                double d2 = this.getY() + (this.ly - this.getY()) / this.lSteps;
-                double d3 = this.getZ() + (this.lz - this.getZ()) / this.lSteps;
-                double d4 = Mth.wrapDegrees(this.lyr - this.getYRot());
-                this.setYRot(this.getYRot() + (float) (d4 / this.lSteps));
-                this.setXRot(this.getXRot() + (float) ((this.lxr - this.getXRot()) / this.lSteps));
-                --this.lSteps;
-                this.setPos(d0, d2, d3);
-                this.setRot(this.getYRot(), this.getXRot());
-            } else {
-                this.setPos(this.getX(), this.getY(), this.getZ());
-                this.setRot(this.getYRot(), this.getXRot());
-            }
-        } else {
-            /*
-            this.prevPosX = this.getPosX();
-            this.prevPosY = this.getPosY();
-            this.prevPosZ = this.getPosZ();
-             */
-            if (!this.isNoGravity()) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.04, 0.0));
-            }
-            int i = Mth.floor(this.getX());
-            int j = Mth.floor(this.getY());
-            int k = Mth.floor(this.getZ());
-            if (this.level().getBlockState(new BlockPos(i, j - 1, k)).is(BlockTags.RAILS)) {
-                --j;
-            }
-            BlockPos blockposition = new BlockPos(i, j, k);
-            BlockState blockstate = this.level().getBlockState(blockposition);
-            this.onRails = BaseRailBlock.isRail(blockstate);
-            if (this.canUseRail() && this.onRails) {
-                this.moveAlongTrack(blockposition, blockstate);
-                if (blockstate.getBlock() instanceof PoweredRailBlock && ((PoweredRailBlock) blockstate.getBlock()).isActivatorRail()) {
-                    this.activateMinecart(i, j, k, blockstate.getValue(PoweredRailBlock.POWERED));
-                }
-            } else {
-                this.comeOffTrack();
-            }
-            this.checkInsideBlocks();
-            this.setXRot(0.f);
-            double d5 = this.xo - this.getX();
-            double d6 = this.zo - this.getZ();
-            if (d5 * d5 + d6 * d6 > 0.001) {
-                this.setYRot((float) (Mth.atan2(d6, d5) * 180.0 / 3.141592653589793));
-                if (this.flipped) {
-                    this.setYRot(this.getYRot() + 180.0f);
-                }
-            }
-            double d7 = Mth.wrapDegrees(this.getYRot() - this.yRotO);
-            if (d7 < -170.0 || d7 >= 170.0) {
-                this.setYRot(this.getYRot() + 180.0f);
-                this.flipped = !this.flipped;
-            }
-            this.setRot(this.getYRot(), this.getXRot());
-            org.bukkit.World bworld = ((WorldBridge) this.level()).bridge$getWorld();
-            Location from = this.arclight$prevLocation;
-            this.arclight$prevLocation = null;
-            from.setWorld(bworld);
-            Location to = new Location(bworld, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
-            Vehicle vehicle = (Vehicle) this.getBukkitEntity();
-            Bukkit.getPluginManager().callEvent(new VehicleUpdateEvent(vehicle));
-            if (!from.equals(to)) {
-                Bukkit.getPluginManager().callEvent(new VehicleMoveEvent(vehicle, from, to));
-            }
-            if (this.getMinecartType() == AbstractMinecart.Type.RIDEABLE && this.getDeltaMovement().horizontalDistanceSqr() > 0.01) {
-                List<Entity> list = this.level().getEntities((AbstractMinecart) (Object) this, this.getBoundingBox().inflate(0.20000000298023224, 0.0, 0.20000000298023224), EntitySelector.pushableBy((AbstractMinecart) (Object) this));
-                if (!list.isEmpty()) {
-                    for (Entity entity : list) {
-                        if (!(entity instanceof Player) && !(entity instanceof IronGolem) && !(entity instanceof AbstractMinecart) && !this.isVehicle() && !entity.isPassenger()) {
-                            VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent(vehicle, ((EntityBridge) entity).bridge$getBukkitEntity());
-                            Bukkit.getPluginManager().callEvent(collisionEvent);
-                            if (!collisionEvent.isCancelled()) {
-                                entity.startRiding((AbstractMinecart) (Object) this);
-                            }
-                        } else {
-                            if (!isPassengerOfSameVehicle(entity)) {
-                                VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent(vehicle, ((EntityBridge) entity).bridge$getBukkitEntity());
-                                Bukkit.getPluginManager().callEvent(collisionEvent);
-                                if (collisionEvent.isCancelled()) {
-                                    continue;
-                                }
-                            }
-                            entity.push((AbstractMinecart) (Object) this);
-                        }
-                    }
-                }
-            } else {
-                for (Entity entity2 : this.level().getEntities((AbstractMinecart) (Object) this, this.getBoundingBox().inflate(0.20000000298023224, 0.0, 0.20000000298023224))) {
-                    if (!this.hasPassenger(entity2) && entity2.isPushable() && entity2 instanceof AbstractMinecart) {
-                        VehicleEntityCollisionEvent collisionEvent2 = new VehicleEntityCollisionEvent(vehicle, ((EntityBridge) entity2).bridge$getBukkitEntity());
-                        Bukkit.getPluginManager().callEvent(collisionEvent2);
-                        if (collisionEvent2.isCancelled()) {
-                            continue;
-                        }
-                        entity2.push((AbstractMinecart) (Object) this);
-                    }
-                }
-            }
-            this.updateInWaterStateAndDoFluidPushing();
-            if (this.isInLava()) {
-                this.lavaHurt();
-                this.fallDistance *= 0.5F;
-            }
-            this.firstTick = false;
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void arclight$storePrevLocation(CallbackInfo ci) {
+        arclight$prevLocation = new Location(null, getX(), getY(), getZ(), getYRot(), getXRot());
+    }
+
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;handleNetherPortal()V"))
+    private void arclight$skipHandleNetherPortal(AbstractMinecart instance) {
+        // CraftBukkit - handled in postTick
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/world/entity/vehicle/AbstractMinecart;setRot(FF)V"))
+    private void arclight$fireVehicleEvents(CallbackInfo ci) {
+        org.bukkit.World bworld = ((WorldBridge) this.level()).bridge$getWorld();
+        Location from = this.arclight$prevLocation;
+        this.arclight$prevLocation = null;
+        from.setWorld(bworld);
+        Location to = new Location(bworld, this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+        Vehicle vehicle = (Vehicle) this.getBukkitEntity();
+        Bukkit.getPluginManager().callEvent(new VehicleUpdateEvent(vehicle));
+        if (!from.equals(to)) {
+            Bukkit.getPluginManager().callEvent(new VehicleMoveEvent(vehicle, from, to));
         }
     }
+
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;startRiding(Lnet/minecraft/world/entity/Entity;)Z"))
+    private boolean arclight$fireCollisionEventsRiding(Entity that, Entity self) {
+        VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), ((EntityBridge) that).bridge$getBukkitEntity());
+        Bukkit.getPluginManager().callEvent(collisionEvent);
+
+        if (collisionEvent.isCancelled()) {
+            return false;
+        }
+        return that.startRiding((Entity) (Object) this);
+    }
+
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;push(Lnet/minecraft/world/entity/Entity;)V"))
+    private void arclight$fireCollisionEventsPush(Entity that, Entity self) {
+        VehicleEntityCollisionEvent collisionEvent = new VehicleEntityCollisionEvent((Vehicle) this.getBukkitEntity(), ((EntityBridge) that).bridge$getBukkitEntity());
+        Bukkit.getPluginManager().callEvent(collisionEvent);
+
+        if (collisionEvent.isCancelled()) {
+            return;
+        }
+        that.push((Entity) (Object) this);
+    }
+
+    /*
+     * Don't use Overwrite to preserve LVT for injectors.
+     * See #1677 and Spelunkery AbstractMinecartMixin#rattleMinecart
+     */
+    //@Overwrite
+    //public void tick()
 
     /**
      * @author IzzelAliz
