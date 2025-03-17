@@ -107,7 +107,6 @@ public class ClassLoaderAdapter implements PluginTransformer {
             list.add(new LineNumberNode(-101, getfield));
             list.add(new VarInsnNode(Opcodes.ALOAD, 0));
             list.add(new FieldInsnNode(Opcodes.GETFIELD, node.name, remapConfig.name, remapConfig.desc));
-            list.add(new InsnNode(Opcodes.DUP));
             list.add(new JumpInsnNode(Opcodes.IFNONNULL, aret));
 
             list.add(putfield);
@@ -128,9 +127,9 @@ public class ClassLoaderAdapter implements PluginTransformer {
             }
             list.add(new VarInsnNode(Opcodes.ALOAD, 0));
             list.add(new FieldInsnNode(Opcodes.GETFIELD, node.name, remapConfig.name, remapConfig.desc));
-            list.add(new InsnNode(Opcodes.RETURN));
+            list.add(new InsnNode(Opcodes.ARETURN));
             getConfig.instructions = list;
-            getConfig.visitMaxs(3, 0);
+            getConfig.visitMaxs(3, 1);
         }
         node.fields.add(remapper);
         node.fields.add(remapConfig);
