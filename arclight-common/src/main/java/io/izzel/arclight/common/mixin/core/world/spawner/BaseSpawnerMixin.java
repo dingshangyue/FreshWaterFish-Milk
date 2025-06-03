@@ -142,7 +142,7 @@ public abstract class BaseSpawnerMixin {
                             continue;
                         }
                         ((ServerWorldBridge) level).bridge$pushAddEntityReason(CreatureSpawnEvent.SpawnReason.SPAWNER);
-                        if (level.tryAddFreshEntityWithPassengers(entity)) {
+                        if (!level.tryAddFreshEntityWithPassengers(entity)) {
                             this.delay(level, pos);
                             return;
                         }
