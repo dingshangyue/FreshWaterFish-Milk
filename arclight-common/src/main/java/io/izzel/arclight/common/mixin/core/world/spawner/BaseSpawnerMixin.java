@@ -141,7 +141,8 @@ public abstract class BaseSpawnerMixin {
                         if (CraftEventFactory.callSpawnerSpawnEvent(entity, pos).isCancelled()) {
                             continue;
                         }
-                        if (!((ServerWorldBridge) level).bridge$addAllEntitiesSafely(entity, CreatureSpawnEvent.SpawnReason.SPAWNER)) {
+                        ((ServerWorldBridge) level).bridge$pushAddEntityReason(CreatureSpawnEvent.SpawnReason.SPAWNER);
+                        if (level.tryAddFreshEntityWithPassengers(entity)) {
                             this.delay(level, pos);
                             return;
                         }
