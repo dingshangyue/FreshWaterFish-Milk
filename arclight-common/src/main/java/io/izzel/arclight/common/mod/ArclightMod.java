@@ -3,9 +3,11 @@ package io.izzel.arclight.common.mod;
 import io.izzel.arclight.common.mod.server.event.ArclightEventDispatcherRegistry;
 import io.izzel.arclight.common.mod.util.log.ArclightI18nLogger;
 import net.minecraftforge.fml.IExtensionPoint;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.NetworkConstants;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -50,5 +52,9 @@ public class ArclightMod {
         public void println(@Nullable Object x) {
             logger.log(level, String.valueOf(x));
         }
+    }
+
+    public static boolean isModLoaded(String modid) {
+        return ModList.get() != null ? ModList.get().isLoaded(modid) : FMLLoader.getLoadingModList().getModFileById(modid) != null;
     }
 }

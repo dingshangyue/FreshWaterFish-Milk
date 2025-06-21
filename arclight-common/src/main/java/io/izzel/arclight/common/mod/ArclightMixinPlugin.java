@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import io.izzel.arclight.common.mod.mixins.ShouldApplyProcessor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -143,7 +144,7 @@ public class ArclightMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return true;
+        return ShouldApplyProcessor.shouldApply(mixinClassName);
     }
 
     @Override
