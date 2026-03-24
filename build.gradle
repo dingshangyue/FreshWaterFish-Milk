@@ -1,8 +1,8 @@
-import io.izzel.arclight.gradle.tasks.UploadFilesTask
+import io.izzel.freshwaterfish.gradle.tasks.UploadFilesTask
 
 allprojects {
-    group 'io.izzel.luminara'
-    version '1.0.14'
+    group 'io.freshwaterfish'
+    version '1.0.3'
 
     def getGitHash = { ->
         def stdout = new ByteArrayOutputStream()
@@ -25,7 +25,7 @@ allprojects {
         apiVersion = '1.5.4'
         toolsVersion = '1.3.0'
         mixinVersion = project.ext.mixinVersion
-        versionName = 'trials'
+        versionName = '淡水鱼 1.0.3'
         gitHash = getGitHash()
     }
 
@@ -38,8 +38,8 @@ allprojects {
 
 task collect(type: Copy) {
     destinationDir = file('build/libs')
-    from { project(':arclight-forge').tasks.jar.outputs }
-    dependsOn { project(':arclight-forge').tasks.jar }
+    from { project(':freshwaterfish-forge').tasks.jar.outputs }
+    dependsOn { project(':freshwaterfish-forge').tasks.jar }
 }
 
 def gitBranch() {

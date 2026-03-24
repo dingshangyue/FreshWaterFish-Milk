@@ -15,8 +15,8 @@ classloader:
 comments:
   _v:
     comment:
-      - 'Repository: https://github.com/QianMo0721/Luminara'
-      - 'Issue Tracker: https://github.com/QianMo0721/Luminara/issues'
+      - 'Repository: https://github.com/QianMo0721/FreshwaterFish'
+      - 'Issue Tracker: https://github.com/QianMo0721/FreshwaterFish/issues'
       - ''
       - ''
       - Config version number, do not edit.
@@ -66,7 +66,7 @@ comments:
         - Enable this could improve plugin compotibility
         - Changing this on production server will cause changes to mod world names
         - '  and cause data loss on plugins relying world names'
-        - See https://github.com/IzzelAliz/Arclight/wiki/World-Symlink for more detail
+        - See https://github.com/QianMo0721/FreshwaterFish/wiki/World-Symlink for more detail
     valid-username-regex:
       comment:
         - Regex for valid username check. Leave it blank will fallback to vanilla check
@@ -265,7 +265,7 @@ logo:
   - '    §6 / /___/ /_/ / / / / / / / / / / /_/ / /  / /_/ / '
   - '    §e/_____/\__,_/_/ /_/ /_/_/_/ /_/\__,_/_/   \__,_/  '
   - ''
-  - '    §eLuminara Server-Software By§b QianMo0721'
+  - '    §eFreshwaterFish Server-Software By§b QianMo0721'
   - '    §aVersion {} / {}'
   - '    §aBuild Time: {}'
   - ''
@@ -273,10 +273,10 @@ loot:
   container:
     overfill-attempt: Tried to over-fill a container
 mixin-load:
-  core: Luminara core mixin added.
-  optimization: Luminara optimization mixin added.
+  core: FreshwaterFish core mixin added.
+  optimization: FreshwaterFish optimization mixin added.
 mod: { }
-mod-load: Luminara Mod loaded.
+mod-load: FreshwaterFish Mod loaded.
 network:
   custom-payload:
     dispatch-failed: Couldn't dispatch custom payload
@@ -312,7 +312,7 @@ optimization:
   manager:
     shutdown-error: Error during optimization system shutdown
   memory:
-    cache-cleanup-completed: Luminara cache cleanup completed
+    cache-cleanup-completed: FreshwaterFish cache cleanup completed
     cache-cleanup-error: Error during cache cleanup
     cache-cleanup-failed: Cache cleanup failed
     cleanup-complete: Memory cleanup completed, freed {} MB
@@ -361,7 +361,7 @@ registry:
   entity-type: Registered {} new entity types
   environment: Registered {} new dimensions
   error: 'Error occured registering Forge '
-  forge-event: Luminara events registered.
+  forge-event: FreshwaterFish events registered.
   material: Registered {} new materials with {} blocks and {} items
   meta-type:
     error: '{} provided itemMetaType {} is invalid: {}'
@@ -382,10 +382,10 @@ server:
   crash-report-saved: 'Crash report saved to: {}'
   overload-warning: Can't keep up! Is the server overloaded? Running {} milliseconds or {} ticks behind
   preparing-start-region: Preparing start region for dimension {}
-  starting: Starting Luminara server...
+  starting: Starting FreshwaterFish server...
   stop-exception: Exception stopping the server
-  stopped: Luminara server has stopped
-  stopping: Stopping Luminara server...
+  stopped: FreshwaterFish server has stopped
+  stopping: Stopping FreshwaterFish server...
   threads:
     force-exit: '{} threads not shutting down correctly, force exiting'
   unexpected-exception: Encountered unexpected exception

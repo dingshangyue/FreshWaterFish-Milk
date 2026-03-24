@@ -1,6 +1,6 @@
-rootProject.name = 'luminara'
-include 'arclight-common'
+rootProject.name = 'freshwaterfish'
+include 'freshwaterfish-common'
 include 'forge-installer'
-include 'arclight-forge'
+include 'freshwaterfish-forge'
 include 'i18n-config'
 

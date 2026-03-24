@@ -1,0 +1,39 @@
+package io.izzel.freshwaterfish.common.mixin.core.world.entity.ai.goal;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.EatBlockGoal;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.event.ForgeEventFactory;
+import org.bukkit.craftbukkit.v.event.CraftEventFactory;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+@Mixin(EatBlockGoal.class)
+public class EatBlockGoalMixin {
+
+    private transient BlockPos freshwaterfish$pos;
+
+    @Inject(method = "tick", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", ordinal = 0, remap = false, target = "Lnet/minecraftforge/event/ForgeEventFactory;getMobGriefingEvent(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;)Z"))
+    public void freshwaterfish$capturePos1(CallbackInfo ci, BlockPos pos) {
+        freshwaterfish$pos = pos;
+    }
+
+    @Inject(method = "tick", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", ordinal = 1, remap = false, target = "Lnet/minecraftforge/event/ForgeEventFactory;getMobGriefingEvent(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;)Z"))
+    public void freshwaterfish$capturePos2(CallbackInfo ci, BlockPos pos) {
+        freshwaterfish$pos = pos.below();
+    }
+
+    @Redirect(method = "tick", at = @At(value = "INVOKE", remap = false, target = "Lnet/minecraftforge/event/ForgeEventFactory;getMobGriefingEvent(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/Entity;)Z"))
+    public boolean freshwaterfish$entityChangeBlock(Level world, Entity entity) {
+        boolean b = ForgeEventFactory.getMobGriefingEvent(world, entity);
+        var result = CraftEventFactory.callEntityChangeBlockEvent(entity, freshwaterfish$pos, Blocks.AIR.defaultBlockState(), !b);
+        freshwaterfish$pos = null;
+        return result;
+    }
+}

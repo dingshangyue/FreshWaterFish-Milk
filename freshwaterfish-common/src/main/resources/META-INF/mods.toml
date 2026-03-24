@@ -1,0 +1,13 @@
+modLoader = "javafml"
+loaderVersion = "[44,]"
+license = "GNU GENERAL PUBLIC LICENSE Version 3"
+
+[[mods]]
+modId = "freshwaterfish"
+version = "${version}"
+displayName = "FreshwaterFish Mod"
+credits = "lona,夜幕"
+authors = "IzzelAliz"
+description = '''
+    FreshwaterFish bukkit layer for MinecraftForge
+    '''

@@ -7,7 +7,7 @@ logo:
   - "    §6 / /___/ /_/ / / / / / / / / / / /_/ / /  / /_/ / "
   - "    §e/_____/\\__,_/_/ /_/ /_/_/_/ /_/\\__,_/_/   \\__,_/  "
   - ""
-  - "    §eLuminara·流明纳拉 Serveur Par§b QianMo0721"
+  - "    §eFreshwaterFish·流明纳拉 Serveur Par§b QianMo0721"
   - "    §aVersion {} / {}"
   - "    §aDate du Build {}"
   - ""
@@ -24,10 +24,10 @@ i18n:
 loading-mapping: "Chargement des mappings ..."
 
 mixin-load:
-  core: "Luminara core mixin ajouté."
-  optimization: "Luminara optimization mixin ajouté."
+  core: "FreshwaterFish core mixin ajouté."
+  optimization: "FreshwaterFish optimization mixin ajouté."
 
-mod-load: "Luminara Mod chargé."
+mod-load: "FreshwaterFish Mod chargé."
 
 patcher:
   loading: "Chargement des patchs de plugins ..."
@@ -60,9 +60,9 @@ symlink-file-exist: "Le fichier existe déjà lors de la création du lien symbo
 
 # Server lifecycle messages (合并所有server相关配置)
 server:
-  starting: "Démarrage du serveur Luminara..."
-  stopping: "Arrêt du serveur Luminara..."
-  stopped: "Le serveur Luminara s'est arrêté"
+  starting: "Démarrage du serveur FreshwaterFish..."
+  stopping: "Arrêt du serveur FreshwaterFish..."
+  stopped: "Le serveur FreshwaterFish s'est arrêté"
   crash-report-saved: "Rapport de crash sauvegardé dans : {}"
   crash-report-failed: "Échec de la sauvegarde du rapport de crash sur le disque"
   unexpected-exception: "Exception inattendue rencontrée"
@@ -94,7 +94,7 @@ optimization:
     cleanup-complete: "Nettoyage de la mémoire terminé, {} MB libérés"
     high-usage: "Utilisation mémoire élevée : {}%"
     gc-triggered: "Collecte des déchets déclenchée"
-    cache-cleanup-completed: "Nettoyage du cache Luminara terminé"
+    cache-cleanup-completed: "Nettoyage du cache FreshwaterFish terminé"
     cache-cleanup-error: "Erreur lors du nettoyage du cache"
     cache-cleanup-failed: "Échec du nettoyage du cache"
   manager:
@@ -311,8 +311,8 @@ loot:
 # Comments (保留所有注释配置)
 comments:
   _v.comment:
-    - "Dépôt: https://github.com/QianMo0721/Luminara"
-    - "Problèmes: https://github.com/QianMo0721/Luminara/issues"
+    - "Dépôt: https://github.com/QianMo0721/FreshwaterFish"
+    - "Problèmes: https://github.com/QianMo0721/FreshwaterFish/issues"
     - ""
     - ""
     - "Numéro de version de la configuration, ne pas modifier."
@@ -357,7 +357,7 @@ comments:
       - "Activer ceci pourrait améliorer la compatibilité des plugins"
       - "Changer ceci sur un serveur de production causera des changements aux noms des mondes de mod"
       - "  et causera une perte de données sur les plugins dépendant des noms de monde"
-      - "Voir https://github.com/IzzelAliz/Arclight/wiki/World-Symlink pour plus de détails"
+      - "Voir https://github.com/QianMo0721/FreshwaterFish/wiki/World-Symlink pour plus de détails"
     extra-logic-worlds.comment:
       - "Logique des mondes supplémentaires en cours d'exécution"
       - "Si des mods ne fonctionnent pas bien, essayez de rechercher les noms de classe dans les logs liés à [EXT_LOGIC] et ajoutez-les ici"

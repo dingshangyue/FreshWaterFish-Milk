@@ -1,4 +1,4 @@
-# Luminara
+# FreshwaterFish
 
 一个Arclight fork，争取在Arclight上做出更多优化与改进（1.20.1）
 
@@ -24,16 +24,16 @@
 
 ### 稳定版本
 
-- [GitHub Releases](https://github.com/QianMo0721/Luminara/releases) - 推荐用于生产环境
+- [GitHub Releases](https://github.com/QianMo0721/FreshwaterFish/releases) - 推荐用于生产环境
 
 ### 开发版本
 
-- [每日构建版本](https://github.com/QianMo0721/Luminara/actions/workflows/gradle.yml?query=branch%3ATrials) *(需要
+- [每日构建版本](https://github.com/QianMo0721/FreshwaterFish/actions/workflows/gradle.yml?query=branch%3ATrials) *(需要
   GitHub 登录)*
 
 ### 自行构建
 
-- 克隆本项目到本地 `git clone -b <分支> https://github.com/QianMo0721/Luminara.git`
+- 克隆本项目到本地 `git clone -b <分支> https://github.com/QianMo0721/FreshwaterFish.git`
 - 运行 `./gradlew cleanBuild remapSpigotJar idea --no-daemon -i --stacktrace --refresh-dependencies` 进行配置
 - 运行 `./gradlew build collect` 构建项目
 - 构建完成后，jar 文件位于 `./build/libs` 目录下
@@ -44,12 +44,12 @@
 2. **启动服务器**：
 
    ```bash
-   java -jar luminara.jar nogui
+   java -jar freshwaterfish.jar nogui
    ```
 
    > `nogui` 参数将禁用服务器控制面板
    >
-3. 在每次更新前，请将新的JAR替换旧的JAR，然后删除.arclight文件夹，否则某些修复将不生效！
+3. 在每次更新前，请将新的JAR替换旧的JAR，然后删除.freshwaterfish文件夹，否则某些修复将不生效！
 
 ## 不兼容
 
@@ -65,8 +65,8 @@
 
 ### 问题反馈
 
-- [提交 Bug](https://github.com/QianMo0721/Luminara/issues/new/choose) - 遇到问题请在这里报告
-- [讨论区](https://github.com/QianMo0721/Luminara/discussions) - 提问和讨论
+- [提交 Bug](https://github.com/QianMo0721/FreshwaterFish/issues/new/choose) - 遇到问题请在这里报告
+- [讨论区](https://github.com/QianMo0721/FreshwaterFish/discussions) - 提问和讨论
 - 请勿将本服务端的问题反馈到Arclight！
 
 ## 开源协议

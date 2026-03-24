@@ -2,7 +2,9 @@ plugins {
     id 'java'
 }
 
-archivesBaseName = 'luminara-forge-installer'
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+archivesBaseName = 'freshwaterfish-forge-installer'
 
 repositories {
     mavenCentral()

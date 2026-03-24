@@ -1,82 +1,26 @@
-# Luminara
+# FreshwaterFish
 
-[简体中文](README_zh.md)
+二次开发Arclight，MOD插件混合端，优化更强大，兼容性更强
 
-中国 / 简体中文用户请加入 [CraftAmethyst 社区 QQ 交流群](https://qm.qq.com/q/u3Dylx2ls6)
+**在使用FreshwaterFish核心出现问题，不要在Arclight项目反馈！**
 
-Discord: https://discord.gg/H7RqfGCa
+## 优化特性
 
-An Arclight fork, aiming to make more optimizations and improvements on Arclight (1.20.1)
+1. **兼容性更强！** - 兼容Forge模组和Spigot/Bukkit插件同时运行，大部分MOD完美运行！
+2. **原生Velocity代理支持！** - 可以使用Velocity代理转发，多端组成跨服功能
+3. **榨干多核性能！** - 提供多线程，多核运算支持！区块加载优化、稳定异步保存世界......
 
-> Any issues encountered while using this server software should be reported in this project's Issues, not in the
-> Arclight project Issues!
+## 支持MC版本
 
-## Features
+- Minecraft 1.20.1
+- Forge版本：Forge 47.4.16
+- 插件兼容性：较好，支持Bukkit/Spigot插件
+- Forge MOD兼容性：极好，支持绝大部分MOD完美运行
 
-- **Strong Compatibility** - Supports Bukkit/Spigot plugins and Forge mods running simultaneously
-- **High Performance** - Asynchronous world saving, chunk optimization...
-- **Easy to Use** - Simple installation and usage
-- **Velocity Support** - Supports Velocity Modern forwarding enabling cross-server functionality
+## 注意
 
-## Main Maintained Version
+⚠️：该服务端不支持加入一些优化MOD
 
-> **Currently Main Maintained Version: Minecraft 1.20.1**
->
-> - **Forge Version**: 47.4.16
-> - **Stability**: Good
-> - **Plugin Compatibility**: Average, Spigot only
-> - **Mod Compatibility**: Excellent
+## 开源协议
 
-## Download
-
-### Stable Versions
-
-- [GitHub Releases](https://github.com/QianMo0721/Luminara/releases) - Recommended for production environments
-
-### Development Versions
-
-- [Daily Build Versions](https://github.com/QianMo0721/Luminara/actions/workflows/gradle.yml?query=branch%3ATrials) *(
-  Requires
-  GitHub login)*
-
-### Self-Build
-
-- Clone this project locally `git clone -b <branch> https://github.com/QianMo0721/Luminara.git`
-- Run `./gradlew cleanBuild remapSpigotJar idea --no-daemon -i --stacktrace --refresh-dependencies` for configuration
-- Run `./gradlew build collect` to build the project
-- After building, the jar file is located in the `./build/libs` directory
-
-## Installation and Usage
-
-1. **Download** the jar file
-2. **Start the server**:
-
-   ```bash
-   java -jar luminara.jar nogui
-   ```
-
-   > The `nogui` parameter will disable the server control panel
-   >
-3. Before each update, replace the old JAR file with the new one, then delete the .arclight folder. Otherwise, certain fixes will not take effect!
-
-## Incompatibilities
-
-- May not be compatible with some optimization mods.
-- Incompatible with all optimized Bukkit plugins
-
-## Support and Help
-
-### Documentation
-
-- [Arclight Documentation](https://wiki.izzel.io/s/arclight-docs) - Detailed usage guides and configuration instructions
-- [To-Do List](TODO.md)
-
-### Issue Reporting
-
-- [Submit Bug](https://github.com/QianMo0721/Luminara/issues/new/choose) - Report problems here
-- [Discussion Forum](https://github.com/QianMo0721/Luminara/discussions) - Ask questions and discuss
-- Do not report issues with this server software to Arclight!
-
-## License
-
-This project is open source under the [GPL v3](LICENSE) license.
+本项目基于 GPL v3 协议开源
