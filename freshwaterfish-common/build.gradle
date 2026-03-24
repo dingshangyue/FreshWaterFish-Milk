@@ -149,7 +149,7 @@ jar {
     }
     // 包含资源文件
     from('src/main/resources/') {
-        include 'mixins.freshwaterfish*.json'
+        include 'mixins.freshwaterfish.*.json'
         include 'META-INF/**'
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -169,7 +169,7 @@ tasks.register('spigotJar', Jar) {
         def task = tasks.create('renameSpigotJar', net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace)
         task.input.set(archiveFile.get().asFile)
         task.hasLog = false
-        task.mappings.set(project.file('build/freshwaterfish_cache/tmp_srg/bukkit_srg.srg'))
+        task.mappings.set(project.file('build/arclight_cache/tmp_srg/bukkit_srg.srg'))
         task.args.add('--reverse')
         task.apply()
     }

@@ -124,8 +124,8 @@ jar {
         }
     }
     into('/') {
-        it.from(project(':freshwaterfish-common').tasks.jar.outputs.files.collect())
-        it.rename { name -> 'common.jar' }
+        it.from(project(':freshwaterfish-common').file('build/reobfJar/output.jar'))
+        it.rename { 'common.jar' }
     }
     into('/') {
         it.from(configurations.gson.collect())
@@ -133,7 +133,7 @@ jar {
     }
     from sourceSets.applaunch.output.classesDirs
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    dependsOn(project(':freshwaterfish-common').tasks.reobfJar)
+    dependsOn project(':freshwaterfish-common').tasks.reobfJar
 }
 
 task generateInstallerInfo {
@@ -194,7 +194,7 @@ task generateInstallerInfo {
                 installer: [
                         minecraft: minecraftVersion,
                         forge    : forgeVersion,
-                        hash     : sha1(project(':freshwaterfish-common').file("${project(':freshwaterfish-common').buildDir}/freshwaterfish_cache/forge-$minecraftVersion-$forgeVersion-installer.jar"))
+                        hash     : sha1(project(':freshwaterfish-common').file("${project(':freshwaterfish-common').buildDir}/arclight_cache/forge-$minecraftVersion-$forgeVersion-installer.jar"))
                 ],
                 libraries: artifacts(libs)
         ]
