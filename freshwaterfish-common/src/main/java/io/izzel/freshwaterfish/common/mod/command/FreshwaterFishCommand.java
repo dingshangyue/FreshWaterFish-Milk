@@ -53,17 +53,17 @@ public class FreshwaterFishCommand {
         source.sendSuccess(() -> Component.literal("§6=== FreshwaterFish Commands ==="), false);
         source.sendSuccess(() -> Component.literal("§7FreshwaterFish - Enhanced Minecraft server platform"), false);
         source.sendSuccess(() -> Component.literal(""), false);
-        source.sendSuccess(() -> Component.literal("§e/luminara help §7- Show this help"), false);
+        source.sendSuccess(() -> Component.literal("§e/freshwaterfish help §7- Show this help"), false);
 
         for (FreshwaterFishSubCommand subCommand : subCommands) {
             if (subCommand.isEnabled()) {
                 String permissionInfo = subCommand.getRequiredPermissionLevel() > 2 ? " §c[OP]" : "";
-                source.sendSuccess(() -> Component.literal("§e/luminara " + subCommand.getName() + permissionInfo + " §7- " + subCommand.getDescription()), false);
+                source.sendSuccess(() -> Component.literal("§e/freshwaterfish " + subCommand.getName() + permissionInfo + " §7- " + subCommand.getDescription()), false);
             }
         }
 
         source.sendSuccess(() -> Component.literal(""), false);
-        source.sendSuccess(() -> Component.literal("§7Use §e/luminara <command> §7for more details"), false);
+        source.sendSuccess(() -> Component.literal("§7Use §e/freshwaterfish <command> §7for more details"), false);
         source.sendSuccess(() -> Component.literal("§6========================"), false);
         return 1;
     }

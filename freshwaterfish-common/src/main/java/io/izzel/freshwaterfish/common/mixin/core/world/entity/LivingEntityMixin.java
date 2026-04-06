@@ -1283,7 +1283,7 @@ public abstract class LivingEntityMixin extends EntityMixin implements LivingEnt
         this.equipEventAndSound(slot, oldItem, newItem, silent);
     }
 
-    // https://github.com/IzzelAliz/Arclight/issues/831
+    // https://github.com/IzzelAliz/FreshwaterFish/issues/831
     @Mixin(value = LivingEntity.class, priority = 1500)
     public static class ObscureApiCompat {
 
@@ -1292,7 +1292,7 @@ public abstract class LivingEntityMixin extends EntityMixin implements LivingEnt
         }
     }
 
-    // https://github.com/IzzelAliz/Arclight/issues/811
+    // https://github.com/IzzelAliz/FreshwaterFish/issues/811
     @Mixin(value = LivingEntity.class, priority = 1500)
     public static class ApotheosisCompatMixin {
 

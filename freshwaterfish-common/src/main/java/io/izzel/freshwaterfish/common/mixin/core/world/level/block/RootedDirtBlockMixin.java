@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-// https://github.com/IzzelAliz/Arclight/issues/812
+// https://github.com/IzzelAliz/FreshwaterFish/issues/812
 @Mixin(value = RootedDirtBlock.class, priority = 1500)
 public class RootedDirtBlockMixin {
 

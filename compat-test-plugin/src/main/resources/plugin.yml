@@ -1,0 +1,4 @@
+name: CompatTestPlugin
+version: 1.0.0
+main: io.freshwaterfish.test.CompatTestPlugin
+api-version: "1.20"

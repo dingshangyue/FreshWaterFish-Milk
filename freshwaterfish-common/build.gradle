@@ -136,7 +136,7 @@ jar {
     manifest.attributes 'MixinConnector': 'io.izzel.freshwaterfish.common.mod.FreshwaterFishConnector'
     manifest.attributes 'Implementation-Title': 'FreshwaterFish'
     manifest.attributes 'Implementation-Version': "freshwaterfish-$minecraftVersion-${project.version}-$gitHash"
-    manifest.attributes 'Implementation-Vendor': 'FreshwaterFish Team'
+    manifest.attributes 'Implementation-Vendor': '淡水鱼'
     manifest.attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd HH:mm:ss")
     from { configurations.embed.collect { it.isDirectory() ? it : zipTree(it) } } {
         exclude "META-INF/MANIFEST.MF"
@@ -146,11 +146,6 @@ jar {
         exclude "LICENSE.txt"
         exclude "META-INF/services/**"
         exclude "org/apache/commons/lang/enum/**"
-    }
-    // 包含资源文件
-    from('src/main/resources/') {
-        include 'mixins.freshwaterfish.*.json'
-        include 'META-INF/**'
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

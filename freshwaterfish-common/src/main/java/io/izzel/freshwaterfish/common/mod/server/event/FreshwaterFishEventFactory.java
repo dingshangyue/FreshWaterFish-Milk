@@ -33,21 +33,10 @@ public abstract class FreshwaterFishEventFactory {
     }
 
     public static void callEntityDeathEvent(LivingEntity entity, List<ItemStack> drops) {
-        try {
-            if (entity instanceof LivingEntityBridge bridge) {
-                CraftLivingEntity craftLivingEntity = bridge.bridge$getBukkitEntity();
-                EntityDeathEvent event = new EntityDeathEvent(craftLivingEntity, drops, bridge.bridge$getExpReward());
-                callEvent(event);
-                bridge.bridge$setExpToDrop(event.getDroppedExp());
-            } else {
-                // LivingEntityBridge mixin not applied to this entity, skip event
-                // This may cause plugin compatibility issues but prevents crash
-                System.err.println("[FreshwaterFish] WARNING: LivingEntityBridge not implemented for " + entity.getClass().getName() + ", death event skipped");
-            }
-        } catch (ClassCastException e) {
-            // Catch class cast exception to prevent crash
-            System.err.println("[FreshwaterFish] ERROR: Class cast exception when handling entity death event for " + entity.getClass().getName() + ": " + e.getMessage());
-        }
+        CraftLivingEntity craftLivingEntity = ((LivingEntityBridge) entity).bridge$getBukkitEntity();
+        EntityDeathEvent event = new EntityDeathEvent(craftLivingEntity, drops, ((LivingEntityBridge) entity).bridge$getExpReward());
+        callEvent(event);
+        ((LivingEntityBridge) entity).bridge$setExpToDrop(event.getDroppedExp());
     }
 
     public static EntityDeathEvent callEntityDeathEvent(org.bukkit.entity.LivingEntity entity, List<ItemStack> drops, int droppedExp) {

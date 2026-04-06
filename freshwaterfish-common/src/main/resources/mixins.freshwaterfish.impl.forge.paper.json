@@ -1,16 +1,12 @@
 {
-  "required": true,
   "minVersion": "0.8",
-  "package": "io.izzel.freshwaterfish.common.mixin.optimization",
+  "package": "io.izzel.freshwaterfish.common.mixin.optimization.paper",
   "target": "@env(DEFAULT)",
   "refmap": "mixins.freshwaterfish.refmap.json",
-  "setSourceFile": true,
-  "injectors": {
-    "defaultRequire": 1
-  },
+  "plugin": "io.izzel.freshwaterfish.common.mod.FreshwaterFishMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "paper.MinecraftServerMixin_PaperWorldCreation",
-    "paper.PlayerListMixin_PaperWorldCreation"
+    "MinecraftServerMixin_PaperWorldCreation",
+    "PlayerListMixin_PaperWorldCreation"
   ]
 }

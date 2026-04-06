@@ -15,7 +15,7 @@ public abstract class SaplingBlockMixin {
     /*
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/SaplingBlock;grow(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Ljava/util/Random;)V"))
     public void freshwaterfish$treeGrow(SaplingBlock saplingBlock, IWorld worldIn, BlockPos pos, BlockState state, Random rand) {
-        BlockStateListPopulator populator = new ArclightBlockPopulator(worldIn.getWorld());
+        BlockStateListPopulator populator = new FreshwaterFishBlockPopulator(worldIn.getWorld());
         this.grow(populator, pos, state, rand);
         if (populator.getBlocks().size() > 0) {
             TreeType treeType = FreshwaterFishCaptures.getTreeType();

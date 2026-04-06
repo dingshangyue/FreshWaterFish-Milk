@@ -1,1 +1,1 @@
-Please read this [wiki section](https://github.com/IzzelAliz/Arclight/wiki/Contributing).
+Please read this [wiki section](https://github.com/IzzelAliz/FreshwaterFish/wiki/Contributing).

@@ -41,7 +41,7 @@ patcher:
   load-error: "Произошла ошибка при загрузке патчера"
 
 registry:
-  forge-event: "События Arclight зарегистрированы."
+  forge-event: "События FreshwaterFish зарегистрированы."
   begin: "Регистрирование для Bukkit ..."
   error: "Произошла ошибка регистрирования Forge "
   material: "Зарегистрировано  {} новых материалов с {} блоками и {} предметами"
@@ -230,7 +230,7 @@ player:
 
 # Bootstrap messages
 bootstrap:
-  error: "Ошибка загрузки Arclight"
+  error: "Ошибка загрузки FreshwaterFish"
 
 # Component bridge messages
 component:
@@ -362,7 +362,7 @@ comments:
       - "Включение этого может улучшить совместимость плагинов"
       - "Изменение этого на продакшн сервере вызовет изменения в именах миров модов"
       - "  и приведет к потере данных в плагинах, зависящих от имен миров"
-      - "См. https://github.com/QianMo0721/FreshwaterFish/wiki/World-Symlink для подробностей"
+      - "См. https://github.com/IzzelAliz/FreshwaterFish/wiki/World-Symlink для подробностей"
     extra-logic-worlds.comment:
       - "Дополнительная логика работающих миров"
       - "Если какие-то моды работают неправильно, попробуйте найти имена классов в логах, связанные с [EXT_LOGIC], и добавьте их сюда"

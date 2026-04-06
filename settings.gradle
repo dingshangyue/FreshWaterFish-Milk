@@ -4,3 +4,6 @@ include 'forge-installer'
 include 'freshwaterfish-forge'
 include 'i18n-config'
 
+project(':freshwaterfish-common').projectDir = file('freshwaterfish-common')
+project(':freshwaterfish-forge').projectDir = file('freshwaterfish-forge')
+

@@ -6,12 +6,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        报告前先阅读[常见问题](https://github.com/IzzelAliz/Arclight/wiki/FAQ)！
+        报告前先阅读[常见问题](https://github.com/IzzelAliz/FreshwaterFish/wiki/FAQ)！
         
         请使用[最新的构建版本](https://github.com/QianMo0721/FreshwaterFish/actions/workflows/gradle.yml?query=branch%3ATrials)报告，你发现的问题很可能已经修复。
         
         在进行错误报告之前，请确保没有类似的现有的报告。
-        请勿将FreshwaterFish的问题反馈到Arclight项目！
+        请勿将FreshwaterFish的问题反馈到FreshwaterFish项目！
 
   - type: checkboxes
     id: check
@@ -20,7 +20,7 @@ body:
       description: 市面上大多数整合包，特别是较老版本（1.12.2）的整合包，其自带的插件都无法在高版本环境下运行
       options:
         - label: 正在使用最新的 FreshwaterFish
-        - label: 不可在 Arclight 复现
+        - label: 不可在 FreshwaterFish 复现
         - label: 已为所有插件及模组安装依赖
           required: true
         - label: 已为所有插件及模组更新至最新版
@@ -34,7 +34,7 @@ body:
     id: version
     attributes:
       label: FreshwaterFish 版本
-      description: 在 FreshwaterFish 启动时会打印版本，如 luminara-1.20.1-1.0.8-TRIALS-xxx
+      description: 在 FreshwaterFish 启动时会打印版本，如 freshwaterfish-1.20.1-1.0.8-TRIALS-xxx
     validations:
       required: true
 

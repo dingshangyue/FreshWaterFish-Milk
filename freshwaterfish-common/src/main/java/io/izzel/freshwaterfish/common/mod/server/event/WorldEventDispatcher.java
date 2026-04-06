@@ -15,12 +15,8 @@ public class WorldEventDispatcher {
     public void onWorldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel level) {
             LOGGER.info("world.unloading", level.dimension().location());
-            if (Bukkit.getServer() != null) {
-                ((CraftServerBridge) Bukkit.getServer()).bridge$removeWorld(level);
-                LOGGER.info("world.unloaded", level.dimension().location());
-            } else {
-                LOGGER.info("world.unloaded.skip", level.dimension().location());
-            }
+            ((CraftServerBridge) Bukkit.getServer()).bridge$removeWorld(level);
+            LOGGER.info("world.unloaded", level.dimension().location());
         }
     }
 }

@@ -79,7 +79,7 @@ public abstract class SlimeMixin extends MobMixin {
                 return;
             }
             for (int l = 0; l < freshwaterfish$slimes.size(); l++) {
-                // Apotheosis compat, see https://github.com/IzzelAliz/Arclight/issues/1078
+                // Apotheosis compat, see https://github.com/IzzelAliz/FreshwaterFish/issues/1078
                 float f1 = ((float) (l % 2) - 0.5F) * f;
                 float f2 = ((float) (l / 2) - 0.5F) * f;
                 net.minecraft.world.entity.monster.Slime living = (net.minecraft.world.entity.monster.Slime) freshwaterfish$slimes.get(l);

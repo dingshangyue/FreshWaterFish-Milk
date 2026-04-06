@@ -81,7 +81,12 @@ dependencies {
     installer 'com.google.code.gson:gson:2.10.1'
     embed 'io.izzel.arclight:mixin-tools:1.0.1'
     embed "io.izzel:tools:$toolsVersion"
-    embed "io.izzel.arclight:arclight-api:$apiVersion"
+    def localFreshwaterFishApi = file("${System.getProperty('user.home')}/.gradle/caches/modules-2/files-2.1/io.izzel.arclight/arclight-api/${apiVersion}/1405daa493a1c28c25b97daa3ac456ef45c25d27/arclight-api-${apiVersion}.jar")
+    if (localFreshwaterFishApi.exists()) {
+        embed files(localFreshwaterFishApi)
+    } else {
+        embed "io.izzel.arclight:arclight-api:$apiVersion"
+    }
     embed 'commons-lang:commons-lang:2.6@jar'
     embed(project(':i18n-config')) {
         transitive = false
@@ -89,8 +94,6 @@ dependencies {
     embed(project(':forge-installer')) {
         transitive = false
     }
-    // 内置优化插件 - 无法卸载，打包到 plugins 目录
-    embed files('/Users/mac/Desktop/FreshwaterFish/DanshuiYuFix-ModernEnhanced.jar')
 }
 
 jar {
@@ -100,9 +103,6 @@ jar {
     manifest.attributes 'Implementation-Vendor': '淡水鱼'
     manifest.attributes 'Implementation-Timestamp': new Date().format("yyyy-MM-dd HH:mm:ss")
     manifest.attributes 'Automatic-Module-Name': 'freshwaterfish.boot'
-    manifest.attributes 'Implementation-Info': 'Spigot二次开发'
-    
-    // 核心依赖放在根目录
     from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
         exclude "META-INF/MANIFEST.MF"
         exclude "META-INF/*.SF"
@@ -111,21 +111,10 @@ jar {
         exclude "LICENSE.txt"
         exclude "META-INF/services/**"
         exclude "org/apache/commons/lang/enum/**"
-        // 排除插件相关的类，只保留核心依赖
-        exclude "com/danshuiyufix/**"
-        exclude "plugin.yml"
-    }
-    
-    // 内置插件放入 plugins 目录
-    into('plugins') {
-        from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
-            include "com/danshuiyufix/**"
-            include "plugin.yml"
-        }
     }
     into('/') {
-        it.from(project(':freshwaterfish-common').file('build/reobfJar/output.jar'))
-        it.rename { 'common.jar' }
+        it.from(project(':freshwaterfish-common').tasks.jar.outputs.files.collect())
+        it.rename { name -> 'common.jar' }
     }
     into('/') {
         it.from(configurations.gson.collect())
@@ -133,7 +122,7 @@ jar {
     }
     from sourceSets.applaunch.output.classesDirs
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    dependsOn project(':freshwaterfish-common').tasks.reobfJar
+    dependsOn(project(':freshwaterfish-common').tasks.reobfJar)
 }
 
 task generateInstallerInfo {

@@ -66,7 +66,7 @@ public class FreshwaterFishServer {
                 Class.forName("org.sqlite.JDBC");
                 Class.forName("com.mysql.cj.jdbc.Driver");
             } catch (Throwable t) {
-                throw new RuntimeException("Error initializing Arclight", t);
+                throw new RuntimeException("Error initializing FreshwaterFish", t);
             }
             try {
                 FreshwaterFishMod.LOGGER.info("registry.begin");
@@ -101,7 +101,7 @@ public class FreshwaterFishServer {
 
     public static void executeOnMainThread(Runnable runnable) {
         ((MinecraftServerBridge) getMinecraftServer()).bridge$queuedProcess(runnable);
-        if (LockSupport.getBlocker(getMinecraftServer().getRunningThread()) == "waiting for tasks") {
+        if ("waiting for tasks".equals(LockSupport.getBlocker(getMinecraftServer().getRunningThread()))) {
             LockSupport.unpark(getMinecraftServer().getRunningThread());
         }
     }

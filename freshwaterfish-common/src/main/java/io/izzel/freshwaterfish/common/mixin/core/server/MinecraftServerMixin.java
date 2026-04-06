@@ -410,9 +410,6 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
         BukkitRegistry.lockRegistries();
         this.server.getPluginManager().callEvent(new ServerLoadEvent(ServerLoadEvent.LoadType.STARTUP));
 
-        // FreshwaterFish - 加载内置Bukkit插件
-        this.loadBuiltInPlugin("DanshuiYuFix-ModernEnhanced.jar");
-
         try {
             MetricsManager.initialize(
                     ArclightVersion.current().getReleaseName(),
@@ -420,46 +417,6 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
             );
         } catch (Exception e) {
             ARCLIGHT_LOGGER.error("Failed to initialize metrics", e);
-        }
-    }
-
-    // FreshwaterFish - 加载内置Bukkit插件（从JAR内部资源加载）
-    private void loadBuiltInPlugin(String pluginFileName) {
-        try {
-            // 从JAR内部资源加载插件
-            String pluginPath = "plugins/" + pluginFileName;
-            java.net.URL pluginUrl = getClass().getClassLoader().getResource(pluginPath);
-            
-            if (pluginUrl == null) {
-                // 尝试直接从根目录加载
-                pluginUrl = getClass().getClassLoader().getResource(pluginFileName);
-                if (pluginUrl == null) {
-                    ARCLIGHT_LOGGER.warn("Built-in plugin not found in JAR: " + pluginFileName);
-                    return;
-                }
-            }
-            
-            // 创建临时文件用于加载（因为SimplePluginManager.loadPlugin需要File参数）
-            java.io.File tempFile = java.io.File.createTempFile("builtin_", ".jar");
-            tempFile.deleteOnExit();
-            
-            try (java.io.InputStream is = pluginUrl.openStream()) {
-                java.nio.file.Files.copy(is, tempFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-            }
-            
-            // 加载插件
-            java.io.File pluginFile = tempFile;
-            org.bukkit.plugin.Plugin plugin = this.server.getPluginManager().loadPlugin(pluginFile);
-            
-            if (plugin != null) {
-                plugin.onLoad();
-                this.server.getPluginManager().enablePlugin(plugin);
-                ARCLIGHT_LOGGER.info("Loaded built-in plugin: " + plugin.getDescription().getName() + " v" + plugin.getDescription().getVersion());
-            } else {
-                ARCLIGHT_LOGGER.error("Failed to load built-in plugin: " + pluginFileName);
-            }
-        } catch (Exception e) {
-            ARCLIGHT_LOGGER.error("Failed to load built-in plugin: " + pluginFileName, e);
         }
     }
 

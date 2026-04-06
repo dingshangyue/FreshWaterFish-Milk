@@ -86,10 +86,10 @@ public abstract class JavaPluginLoaderMixin implements JavaPluginLoaderBridge {
             Object base = Unsafe.staticFieldBase(executorField);
             long offset = Unsafe.staticFieldOffset(executorField);
             Unsafe.putObjectVolatile(base, offset, replacement);
-            plugin.getLogger().warning("[Arclight] Revived terminated CMI async executor to avoid startup failure.");
+            plugin.getLogger().warning("[FreshwaterFish] Revived terminated CMI async executor to avoid startup failure.");
         } catch (ClassNotFoundException ignored) {
         } catch (Throwable throwable) {
-            plugin.getLogger().log(Level.WARNING, "[Arclight] Failed to revive CMI async executor.", throwable);
+            plugin.getLogger().log(Level.WARNING, "[FreshwaterFish] Failed to revive CMI async executor.", throwable);
         }
     }
 

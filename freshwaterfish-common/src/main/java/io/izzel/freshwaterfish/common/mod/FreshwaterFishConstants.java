@@ -14,7 +14,7 @@ public class FreshwaterFishConstants {
     public static final LootContextParam<Integer> LOOTING_MOD = Unsafe.getStatic(LootContextParams.class, "LOOTING_MOD");
 
     /**
-     * Arclight marker magic value for non-used custom dimension
+     * FreshwaterFish marker magic value for non-used custom dimension
      */
     public static final int ARCLIGHT_DIMENSION = 0xA2c11947;
 

@@ -29,12 +29,7 @@ public class Main_Forge {
             var cl = new BootstrapTransformer(Main_Forge.class.getClassLoader());
             var clazz = cl.loadClass(install.getKey(), true);
             var method = clazz.getMethod("main", String[].class);
-            // Add nogui by default if not present
-            var argList = new java.util.ArrayList<>(Arrays.stream(args).toList());
-            if (!argList.contains("nogui") && !argList.contains("ui")) {
-                argList.add(0, "nogui");
-            }
-            var target = Stream.concat(install.getValue().stream(), argList.stream()).toArray(String[]::new);
+            var target = Stream.concat(install.getValue().stream(), Arrays.stream(args)).toArray(String[]::new);
             method.invoke(null, (Object) target);
         } catch (Exception e) {
             e.printStackTrace();

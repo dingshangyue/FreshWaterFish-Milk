@@ -149,7 +149,7 @@ public class BootstrapTransformer extends ClassLoader {
         // Apply transformation
         // Raw: [SERVICE].accept(args);
         // Modified: BootstrapTransformer.onInvoke$BootstrapLauncher(...);
-        var createArclightBoot = new InsnList();
+        var createFreshwaterFishBoot = new InsnList();
         {
             var popArgsThenService = new InsnNode(Opcodes.POP2);
             var aloadArgs = new VarInsnNode(Opcodes.ALOAD, 0);
@@ -160,12 +160,12 @@ public class BootstrapTransformer extends ClassLoader {
                     "onInvoke$BootstrapLauncher",
                     "([Ljava/lang/String;Lcpw/mods/cl/ModuleClassLoader;)V"
             );
-            createArclightBoot.add(popArgsThenService);
-            createArclightBoot.add(aloadArgs);
-            createArclightBoot.add(aloadModuleCl);
-            createArclightBoot.add(onInvoke);
+            createFreshwaterFishBoot.add(popArgsThenService);
+            createFreshwaterFishBoot.add(aloadArgs);
+            createFreshwaterFishBoot.add(aloadModuleCl);
+            createFreshwaterFishBoot.add(onInvoke);
         }
-        insns.insert(injectionPoint, createArclightBoot);
+        insns.insert(injectionPoint, createFreshwaterFishBoot);
         insns.remove(injectionPoint);
 
         // Save transformed class

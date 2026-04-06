@@ -45,33 +45,22 @@ public class ChunkMapMixin_Optimize {
         var list = new ArrayList<ChunkMap.TrackedEntity>(this.level.players().size());
 
         for (var trackedEntity : this.entityMap.values()) {
-            if (!(trackedEntity instanceof ChunkMap_TrackedEntityBridge bridge)) {
-                // Mixin not applied, skip this entity
-                continue;
-            }
-            var entity = bridge.bridge$getEntity();
+            var entity = ((ChunkMap_TrackedEntityBridge) trackedEntity).bridge$getEntity();
             if (entity instanceof ServerPlayer player && ((ServerPlayerEntityBridge) player).bridge$isTrackerDirty()) {
                 list.add(trackedEntity);
                 ((ServerPlayerEntityBridge) player).bridge$setTrackerDirty(false);
             }
-            bridge.bridge$getServerEntity().sendChanges();
+            ((ChunkMap_TrackedEntityBridge) trackedEntity).bridge$getServerEntity().sendChanges();
         }
 
         for (var trackedEntity : this.entityMap.values()) {
-            if (!(trackedEntity instanceof ChunkMap_TrackedEntityBridge bridge)) {
-                // Mixin not applied, skip this entity
-                continue;
-            }
-            var entity = bridge.bridge$getEntity();
-            SectionPos lastSectionPos = bridge.bridge$getLastSectionPos();
+            var entity = ((ChunkMap_TrackedEntityBridge) trackedEntity).bridge$getEntity();
+            SectionPos lastSectionPos = ((ChunkMap_TrackedEntityBridge) trackedEntity).bridge$getLastSectionPos();
             SectionPos newSectionPos = SectionPos.of(entity);
-            bridge.bridge$setLastSectionPos(newSectionPos);
+            ((ChunkMap_TrackedEntityBridge) trackedEntity).bridge$setLastSectionPos(newSectionPos);
             if (entity instanceof ServerPlayer player) {
                 for (var otherTracker : list) {
-                    if (!(otherTracker instanceof ChunkMap_TrackedEntityBridge otherBridge)) {
-                        continue;
-                    }
-                    var other = (ServerPlayer) otherBridge.bridge$getEntity();
+                    var other = (ServerPlayer) ((ChunkMap_TrackedEntityBridge) otherTracker).bridge$getEntity();
                     if (other.getId() > entity.getId()) {
                         trackedEntity.updatePlayer(other);
                         otherTracker.updatePlayer(player);
@@ -83,10 +72,7 @@ public class ChunkMapMixin_Optimize {
                     trackedEntity.updatePlayers(this.level.players());
                 } else {
                     for (var other : list) {
-                        if (!(other instanceof ChunkMap_TrackedEntityBridge otherBridge)) {
-                            continue;
-                        }
-                        trackedEntity.updatePlayer((ServerPlayer) otherBridge.bridge$getEntity());
+                        trackedEntity.updatePlayer((ServerPlayer) ((ChunkMap_TrackedEntityBridge) other).bridge$getEntity());
                     }
                 }
             }

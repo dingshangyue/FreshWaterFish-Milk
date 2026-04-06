@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerListMixin_PaperWorldCreation {
 
     @Inject(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;updateEntireScoreboard(Lnet/minecraft/server/ServerScoreboard;Lnet/minecraft/server/level/ServerPlayer;)V"))
-    private void luminara$paperForceCloseLoadingScreen(net.minecraft.network.Connection connection, ServerPlayer player, CallbackInfo ci) {
+    private void freshwaterfish$paperForceCloseLoadingScreen(net.minecraft.network.Connection connection, ServerPlayer player, CallbackInfo ci) {
         var config = FreshwaterFishConfig.spec().getOptimization().getWorldCreation();
         if (!config.isForceCloseLoadingScreen()) {
             return;

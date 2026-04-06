@@ -128,7 +128,7 @@ public abstract class FreshwaterFishClassCache implements AutoCloseable {
             var freshwaterfish = ModList.get().getModContainerById("freshwaterfish")
                     .orElseThrow(IllegalStateException::new).getModInfo().getVersion().toString();
             builder.append(freshwaterfish);
-            builder.append("Arclight class cache").append(", ");
+            builder.append("FreshwaterFish class cache").append(", ");
             builder.append("spec=").append(SPEC_VERSION).append(", ");
             builder.append("freshwaterfish=").append(freshwaterfish).append(", ");
             builder.append("patcher=[");

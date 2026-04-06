@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 public class FreshwaterFishJarInJarAdaptor implements IDependencyLocator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("ArclightJiJ");
+    private static final Logger LOGGER = LoggerFactory.getLogger("FreshwaterFishJiJ");
 
     private final IDependencyLocator delegate;
 

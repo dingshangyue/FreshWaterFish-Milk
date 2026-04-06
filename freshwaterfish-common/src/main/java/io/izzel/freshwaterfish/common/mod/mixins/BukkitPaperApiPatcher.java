@@ -47,7 +47,7 @@ public final class BukkitPaperApiPatcher {
         MethodNode method = new MethodNode(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "getCurrentTick", "()I", null, null);
         method.instructions.add(new FieldInsnNode(
                 Opcodes.GETSTATIC,
-                "io/izzel/freshwaterfish/common/mod/ArclightConstants",
+                "io/izzel/freshwaterfish/common/mod/FreshwaterFishConstants",
                 "currentTick",
                 "I"
         ));

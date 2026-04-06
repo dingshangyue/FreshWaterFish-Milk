@@ -6,12 +6,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        Read the [FAQ](https://github.com/IzzelAliz/Arclight/wiki/FAQ) first!
+        Read the [FAQ](https://github.com/IzzelAliz/FreshwaterFish/wiki/FAQ) first!
 
         Report with [latest development version](https://github.com/QianMo0721/FreshwaterFish/actions/workflows/gradle.yml?query=branch%3ATrials), your issue is likely to be fixed.
 
         Make sure you have searched issues and no similar is present.
-        Do not report FreshwaterFish issues to the Arclight project!
+        Do not report FreshwaterFish issues to the FreshwaterFish project!
 
   - type: checkboxes
     id: preliminary
@@ -19,7 +19,7 @@ body:
       label: I have confirmed that ...
       options:
         - label: FreshwaterFish is up to date
-        - label: unable to reproduce in Arclight
+        - label: unable to reproduce in FreshwaterFish
         - label: all dependencies are installed
           required: true
         - label: all plugins and mods are up to date
@@ -33,7 +33,7 @@ body:
     id: version
     attributes:
       label: FreshwaterFish version
-      description: Versions are printed on startup. i.e. luminara-1.20.1-1.0.8-TRIALS-xxx
+      description: Versions are printed on startup. i.e. freshwaterfish-1.20.1-1.0.8-TRIALS-xxx
     validations:
       required: true
 

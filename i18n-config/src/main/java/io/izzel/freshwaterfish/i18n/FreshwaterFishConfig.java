@@ -14,6 +14,8 @@ import java.nio.file.Paths;
 
 public class FreshwaterFishConfig {
 
+    private static final String PRIMARY_CONFIG_NAME = "freshwaterfish.yml";
+    private static final String LEGACY_CONFIG_NAME = "luminara.yml";
     private static FreshwaterFishConfig instance;
 
     static {
@@ -37,8 +39,13 @@ public class FreshwaterFishConfig {
     }
 
     private static void load() throws Exception {
-        Path path = Paths.get("freshwaterfish.yml");
+        Path path = Paths.get(PRIMARY_CONFIG_NAME);
+        Path legacyPath = Paths.get(LEGACY_CONFIG_NAME);
         boolean fileExisted = Files.exists(path);
+        if (!fileExisted && Files.exists(legacyPath)) {
+            path = legacyPath;
+            fileExisted = true;
+        }
 
         if (!fileExisted) {
             instance = createInitialConfig(path);
@@ -51,7 +58,14 @@ public class FreshwaterFishConfig {
 
     private static FreshwaterFishConfig createInitialConfig(Path path) throws Exception {
         String currentLocale = FreshwaterFishLocale.getInstance().current();
-        try (InputStream is = FreshwaterFishConfig.class.getResourceAsStream("/META-INF/freshwaterfish.yml")) {
+        InputStream inputStream = FreshwaterFishConfig.class.getResourceAsStream("/META-INF/" + PRIMARY_CONFIG_NAME);
+        if (inputStream == null) {
+            inputStream = FreshwaterFishConfig.class.getResourceAsStream("/META-INF/" + LEGACY_CONFIG_NAME);
+        }
+        try (InputStream is = inputStream) {
+            if (is == null) {
+                throw new IllegalStateException("Unable to locate default config template");
+            }
             String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             String processed = I18nCommentInjector.injectComments(content, currentLocale);
             Files.write(path, processed.getBytes(StandardCharsets.UTF_8));

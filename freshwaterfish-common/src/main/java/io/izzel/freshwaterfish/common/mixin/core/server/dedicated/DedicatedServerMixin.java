@@ -87,7 +87,11 @@ public abstract class DedicatedServerMixin extends MinecraftServerMixin {
 
     @Inject(method = "onServerExit", at = @At("RETURN"))
     public void freshwaterfish$exitNow(CallbackInfo ci) {
-        // 不再调用TerminalConsoleAppender.close()，避免关闭System.in
+        try {
+            TerminalConsoleAppender.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Thread exitThread = new Thread(this::freshwaterfish$exit, "Exit Thread");
         exitThread.setDaemon(true);
         exitThread.start();

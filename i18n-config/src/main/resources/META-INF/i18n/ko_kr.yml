@@ -8,7 +8,7 @@ auth:
   servers-unavailable: 서버를 사용할 수 없어 사용자명을 확인할 수 없습니다
   verification-failed-allow: 사용자명 확인에 실패했지만 어쨌든 입장을 허용합니다!
 bootstrap:
-  error: Arclight 부트스트랩 오류
+  error: FreshwaterFish 부트스트랩 오류
 chat:
   empty-message-warning: '{}가 빈 메시지를 보내려고 했습니다'
   long-message-warning: '{}가 너무 긴 메시지를 보내려고 했습니다: {} 글자'
@@ -78,7 +78,7 @@ comments:
         - 활성화하면 플러그인과의 호환성을 향상시킬 수 있습니다.
         - 이 설정을 수정하면 모드의 월드 명칭이 바뀌어 월드 명칭에 의존하는 플러그인의
         - '  데이터 손실이 발생할 수 있습니다.'
-        - https://github.com/QianMo0721/FreshwaterFish/wiki/World-Symlink (영문)에서 자세한
+        - https://github.com/IzzelAliz/FreshwaterFish/wiki/World-Symlink (영문)에서 자세한
         - '  내용을 확인하세요.'
     valid-username-regex:
       comment:
@@ -281,7 +281,7 @@ registry:
   entity-type: 신규 엔티티({}종) 적용 완료
   environment: 신규 차원({}종) 적용 완료
   error: Forge 적용 중 오류 발생
-  forge-event: Arclight 이벤트 적용됨
+  forge-event: FreshwaterFish 이벤트 적용됨
   material: '신규 자원(총 {}종: 블록 {}종, 아이템 {}종) 적용 완료'
   meta-type:
     error: '{} provided itemMetaType {} is invalid: {}'

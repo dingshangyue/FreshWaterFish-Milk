@@ -2,9 +2,9 @@ plugins {
     id 'java'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
 archivesBaseName = 'freshwaterfish-i18n-config'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
     mavenCentral()

@@ -17,14 +17,6 @@ public class ChunkManagerMixin_TrackingRange {
 
     @ModifyVariable(method = "addEntity", index = 3, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType;updateInterval()I"))
     private int trackingRange$updateRange(int defaultRange, Entity entity) {
-        if (!freshwaterfish$applyInactive) {
-            return defaultRange;
-        }
-        try {
-            return TrackingRange.getEntityTrackingRange(entity, defaultRange);
-        } catch (NoSuchFieldError e) {
-            // Spigot config not available, fall back to default range
-            return defaultRange;
-        }
+        return freshwaterfish$applyInactive ? TrackingRange.getEntityTrackingRange(entity, defaultRange) : defaultRange;
     }
 }

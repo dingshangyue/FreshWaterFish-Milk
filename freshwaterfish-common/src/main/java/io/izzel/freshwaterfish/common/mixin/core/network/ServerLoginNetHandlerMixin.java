@@ -73,7 +73,7 @@ public abstract class ServerLoginNetHandlerMixin {
     @Shadow
     @Final
     public Connection connection;
-    private volatile boolean luminara$velocityListen = false;
+    private volatile boolean freshwaterfish$velocityListen = false;
     // @formatter:off
     @Shadow private ServerLoginPacketListenerImpl.State state;
     @Shadow @Final private MinecraftServer server;
@@ -158,7 +158,7 @@ public abstract class ServerLoginNetHandlerMixin {
 
         // Velocity Modern Forwarding: send login query and wait for response (only if backend is offline-mode)
         if (FreshwaterFishConfig.spec().getVelocity() != null && FreshwaterFishConfig.spec().getVelocity().isEnabled() && !this.server.usesAuthentication()) {
-            this.luminara$velocityListen = true;
+            this.freshwaterfish$velocityListen = true;
             try {
                 this.connection.send(new ClientboundCustomQueryPacket(LUMINARA_VELOCITY_QUERY_ID, LUMINARA_VELOCITY_CHANNEL, new FriendlyByteBuf(Unpooled.EMPTY_BUFFER)));
                 ARCLIGHT_LOGGER.info("velocity.forwarding.enabled-for-player", packetIn.name(), false);
@@ -332,7 +332,7 @@ public abstract class ServerLoginNetHandlerMixin {
     /**
      * Continue the login process after Velocity forwarding (with Mojang authentication)
      */
-    private void luminara$continueLogin() {
+    private void freshwaterfish$continueLogin() {
         // Execute the login process in a separate thread, similar to Mohist's approach
         Thread thread = new Thread("FreshwaterFish Velocity Login") {
             @Override
@@ -353,7 +353,7 @@ public abstract class ServerLoginNetHandlerMixin {
     /**
      * Get transaction ID from custom query packet using Mohist's exact method names
      */
-    private int luminara$getTransactionId(net.minecraft.network.protocol.login.ServerboundCustomQueryPacket packet) throws Exception {
+    private int freshwaterfish$getTransactionId(net.minecraft.network.protocol.login.ServerboundCustomQueryPacket packet) throws Exception {
         // Use the exact obfuscated method name from Mohist patch: m_179824_()
         var method = packet.getClass().getMethod("m_179824_");
         return (Integer) method.invoke(packet);
@@ -362,7 +362,7 @@ public abstract class ServerLoginNetHandlerMixin {
     /**
      * Get data from custom query packet using Mohist's exact method names
      */
-    private net.minecraft.network.FriendlyByteBuf luminara$getPacketData(net.minecraft.network.protocol.login.ServerboundCustomQueryPacket packet) throws Exception {
+    private net.minecraft.network.FriendlyByteBuf freshwaterfish$getPacketData(net.minecraft.network.protocol.login.ServerboundCustomQueryPacket packet) throws Exception {
         // Use the exact obfuscated method name from Mohist patch: m_179825_()
         var method = packet.getClass().getMethod("m_179825_");
         return (net.minecraft.network.FriendlyByteBuf) method.invoke(packet);
@@ -370,14 +370,14 @@ public abstract class ServerLoginNetHandlerMixin {
 
     // Inject: handle Velocity modern forwarding response during login
     @Inject(method = "handleCustomQueryPacket", at = @At("HEAD"), cancellable = true)
-    private void luminara$onHandleCustomQueryPacket(ServerboundCustomQueryPacket packet, CallbackInfo ci) {
-        if (!this.luminara$velocityListen) return;
+    private void freshwaterfish$onHandleCustomQueryPacket(ServerboundCustomQueryPacket packet, CallbackInfo ci) {
+        if (!this.freshwaterfish$velocityListen) return;
         try {
-            int id = luminara$getTransactionId(packet);
+            int id = freshwaterfish$getTransactionId(packet);
             if (id != LUMINARA_VELOCITY_QUERY_ID) return;
-            this.luminara$velocityListen = false;
+            this.freshwaterfish$velocityListen = false;
 
-            FriendlyByteBuf data = luminara$getPacketData(packet);
+            FriendlyByteBuf data = freshwaterfish$getPacketData(packet);
             if (data == null) {
                 ARCLIGHT_LOGGER.warn("velocity.query.null-response");
                 disconnect(Component.literal("Direct connections to this server are not permitted!"));
@@ -385,7 +385,7 @@ public abstract class ServerLoginNetHandlerMixin {
                 return;
             }
 
-            if (!luminara$validateVelocity(data)) {
+            if (!freshwaterfish$validateVelocity(data)) {
                 ARCLIGHT_LOGGER.warn("velocity.signature.mismatch");
                 disconnect(Component.literal("Direct connections to this server are not permitted!"));
                 ci.cancel();
@@ -393,11 +393,11 @@ public abstract class ServerLoginNetHandlerMixin {
             }
 
             // Parse forwarding payload
-            GameProfile forwarded = luminara$readForwardedProfile(data);
+            GameProfile forwarded = freshwaterfish$readForwardedProfile(data);
             this.gameProfile = forwarded;
 
             // After Velocity forwarding, backend must not perform client encryption
-            luminara$continueLogin();
+            freshwaterfish$continueLogin();
 
             ARCLIGHT_LOGGER.info("velocity.forwarding.player-processed-successfully", this.gameProfile.getName(), false);
             ci.cancel();
@@ -408,7 +408,7 @@ public abstract class ServerLoginNetHandlerMixin {
         }
     }
 
-    private boolean luminara$validateVelocity(FriendlyByteBuf buffer) throws Exception {
+    private boolean freshwaterfish$validateVelocity(FriendlyByteBuf buffer) throws Exception {
         byte[] signature = new byte[32];
         buffer.readBytes(signature);
         byte[] rest = new byte[buffer.readableBytes()];
@@ -426,7 +426,7 @@ public abstract class ServerLoginNetHandlerMixin {
         }
     }
 
-    private GameProfile luminara$readForwardedProfile(FriendlyByteBuf data) {
+    private GameProfile freshwaterfish$readForwardedProfile(FriendlyByteBuf data) {
         // version
         int version = data.readVarInt();
         if (version != 1) {

@@ -13,20 +13,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin_PaperWorldCreation implements WorldCreationBridge {
 
-    private boolean luminara$isIteratingOverLevels = false;
+    private boolean freshwaterfish$isIteratingOverLevels = false;
 
     @Inject(method = "tickChildren", at = @At("HEAD"))
-    private void luminara$setIteratingFlag(CallbackInfo ci) {
-        this.luminara$isIteratingOverLevels = true;
+    private void freshwaterfish$setIteratingFlag(CallbackInfo ci) {
+        this.freshwaterfish$isIteratingOverLevels = true;
     }
 
     @Inject(method = "tickChildren", at = @At("RETURN"))
-    private void luminara$unsetIteratingFlag(CallbackInfo ci) {
-        this.luminara$isIteratingOverLevels = false;
+    private void freshwaterfish$unsetIteratingFlag(CallbackInfo ci) {
+        this.freshwaterfish$isIteratingOverLevels = false;
     }
 
     @Override
-    public boolean luminara$isIteratingOverLevels() {
-        return this.luminara$isIteratingOverLevels;
+    public boolean freshwaterfish$isIteratingOverLevels() {
+        return this.freshwaterfish$isIteratingOverLevels;
     }
 }

@@ -41,7 +41,7 @@ patcher:
   load-error: "Ha ocurrido un error cargando el patcher"
 
 registry:
-  forge-event: "Eventos de Arclight registrados."
+  forge-event: "Eventos de FreshwaterFish registrados."
   begin: "Registrando Bukkit ..."
   error: "Ha ocurrido un error registrando Forge "
   material: "Registrados {} materiales nuevos con {} bloques y {} objetos"
@@ -66,7 +66,7 @@ symlink-file-exist: "El archivo ya existe al crear el enlace simbólico {}"
 
 # Bootstrap messages
 bootstrap:
-  error: "Error en el arranque de Arclight"
+  error: "Error en el arranque de FreshwaterFish"
 
 # Component bridge messages
 component:
@@ -363,7 +363,7 @@ comments:
       - "Activando esto puede mejorar la compatibilidad entre plugins"
       - "Cambiar esto en servidores en producción causará cambios a nombres de mundos modificados (mod world names)"
       - "  y causará pérdida de información en plugins que dependan en los nombres de mundos"
-      - "Lee https://github.com/QianMo0721/FreshwaterFish/wiki/World-Symlink para más detalles"
+      - "Lee https://github.com/IzzelAliz/FreshwaterFish/wiki/World-Symlink para más detalles"
     extra-logic-worlds.comment:
       - "Lógica de los mundos adicionales en ejecución"
       - "Si algún mod no funciona correctamente, intenta buscar en los logs los nombres de las clases relacionados con [EXT_LOGIC] y añádelos aquí"

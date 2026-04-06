@@ -63,7 +63,7 @@ import java.util.function.Supplier;
 @Mixin(Level.class)
 public abstract class LevelMixin implements WorldBridge, LevelWriter {
 
-    @SuppressWarnings("unused") // Access transformed to public by ArclightMixinPlugin
+    @SuppressWarnings("unused") // Access transformed to public by FreshwaterFishMixinPlugin
     private static BlockPos lastPhysicsProblem; // Spigot
     public final Object2LongOpenHashMap<SpawnCategory> ticksPerSpawnCategory = new Object2LongOpenHashMap<>();
     public boolean pvpMode;

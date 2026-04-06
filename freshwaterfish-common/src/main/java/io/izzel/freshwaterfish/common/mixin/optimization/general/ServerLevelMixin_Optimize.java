@@ -12,7 +12,7 @@ public class ServerLevelMixin_Optimize {
     private static final org.apache.logging.log4j.Logger LOGGER = FreshwaterFishI18nLogger.getLogger("ServerLevel-Optimize");
 
     @ModifyVariable(method = "tickChunk", at = @At("HEAD"), argsOnly = true)
-    private int luminara$modifyChunkLoadRate(int chunks) {
+    private int freshwaterfish$modifyChunkLoadRate(int chunks) {
         var config = FreshwaterFishConfig.spec().getOptimization().getChunkOptimization();
         if (config.isOptimizeChunkLoading()) {
             int limited = Math.min(chunks, config.getChunkLoadRateLimit());

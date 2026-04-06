@@ -66,7 +66,7 @@ comments:
         - Enable this could improve plugin compotibility
         - Changing this on production server will cause changes to mod world names
         - '  and cause data loss on plugins relying world names'
-        - See https://github.com/QianMo0721/FreshwaterFish/wiki/World-Symlink for more detail
+        - See https://github.com/IzzelAliz/FreshwaterFish/wiki/World-Symlink for more detail
     valid-username-regex:
       comment:
         - Regex for valid username check. Leave it blank will fallback to vanilla check

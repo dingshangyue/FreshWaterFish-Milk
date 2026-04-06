@@ -17,7 +17,7 @@ public class FreshwaterFishI18nLogger extends ExtendedLoggerWrapper {
     }
 
     public static Logger getLogger(String name) {
-        Logger logger = LogManager.getLogger("ArclightI18n-Debug");
+        Logger logger = LogManager.getLogger("FreshwaterFishI18n-Debug");
         logger.debug("Creating logger for: " + name);
         logger.debug("Logger creation requested for: " + name);
         return new FreshwaterFishI18nLogger((ExtendedLogger) LogManager.getLogger(name));
@@ -50,7 +50,7 @@ public class FreshwaterFishI18nLogger extends ExtendedLoggerWrapper {
 
     @Override
     protected void logMessage(String fqcn, Level level, Marker marker, String message) {
-        Logger debugLogger = LogManager.getLogger("ArclightI18n-Debug");
+        Logger debugLogger = LogManager.getLogger("FreshwaterFishI18n-Debug");
         debugLogger.debug("Processing message: " + message);
         String localized = FreshwaterFishLocale.getInstance().get(message);
         debugLogger.debug("Localized result: " + localized);
