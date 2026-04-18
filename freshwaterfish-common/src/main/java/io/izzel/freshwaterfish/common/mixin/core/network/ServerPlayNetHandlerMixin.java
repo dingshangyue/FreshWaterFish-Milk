@@ -116,7 +116,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
     private static final int CREATIVE_PLACE_DISTANCE_SQUARED = 7 * 7;
     private static final ResourceLocation CUSTOM_REGISTER = new ResourceLocation("register");
     private static final ResourceLocation CUSTOM_UNREGISTER = new ResourceLocation("unregister");
-    private static final org.apache.logging.log4j.Logger ARCLIGHT_LOGGER = FreshwaterFishI18nLogger.getLogger("ServerPlayNetHandler");
+    private static final org.apache.logging.log4j.Logger FRESHWATERFISH_LOG = FreshwaterFishI18nLogger.getLogger("ServerPlayNetHandler");
     @Shadow
     @Final
     private static Logger LOGGER;
@@ -368,7 +368,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
                 }
                 speed *= 2.0;
                 if (d11 - d10 > Math.max(100.0, Math.pow(10.0f * i * speed, 2.0)) && !this.isSingleplayerOwner()) {
-                    ARCLIGHT_LOGGER.warn("vehicle-moved-too-quickly", entity.getName().getString(), this.player.getName().getString(), d7, d8, d9);
+                    FRESHWATERFISH_LOG.warn("vehicle-moved-too-quickly", entity.getName().getString(), this.player.getName().getString(), d7, d8, d9);
                     this.connection.send(new ClientboundMoveVehiclePacket(entity));
                     return;
                 }
@@ -396,7 +396,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
                 boolean flag2 = false;
                 if (d11 > SpigotConfig.movedWronglyThreshold) {
                     flag2 = true;
-                    ARCLIGHT_LOGGER.warn("vehicle-moved-wrongly", entity.getName().getString(), this.player.getName().getString(), Math.sqrt(d11));
+                    FRESHWATERFISH_LOG.warn("vehicle-moved-wrongly", entity.getName().getString(), this.player.getName().getString(), Math.sqrt(d11));
                 }
                 Location curPos = this.getCraftPlayer().getLocation();
                 entity.absMoveTo(d4, d5, d6, f, f2);
@@ -600,7 +600,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
                     } else {
                         ++this.dropCount;
                         if (this.dropCount >= 20) {
-                            ARCLIGHT_LOGGER.warn("player.dropped-items-quickly", this.player.getScoreboardName());
+                            FRESHWATERFISH_LOG.warn("player.dropped-items-quickly", this.player.getScoreboardName());
                             this.disconnect("player.dropped-items-disconnect");
                             return;
                         }
@@ -785,7 +785,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
             this.player.getInventory().selected = packet.getSlot();
             this.player.resetLastActionTime();
         } else {
-            ARCLIGHT_LOGGER.warn("player.invalid-hotbar", this.player.getName().getString());
+            FRESHWATERFISH_LOG.warn("player.invalid-hotbar", this.player.getName().getString());
             this.disconnect("player.invalid-hotbar-disconnect");
         }
     }
@@ -841,7 +841,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
     @Overwrite
     private void performChatCommand(ServerboundChatCommandPacket packet, LastSeenMessages lastseenmessages) {
         String command = "/" + packet.command();
-        ARCLIGHT_LOGGER.info("player.command-issued", this.player.getScoreboardName(), command);
+        FRESHWATERFISH_LOG.info("player.command-issued", this.player.getScoreboardName(), command);
 
         PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(getCraftPlayer(), command, new LazyPlayerSet(server));
         this.cserver.getPluginManager().callEvent(event);
@@ -959,7 +959,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
 
     private void handleCommand(String s) {
         if (SpigotConfig.logCommands) {
-            ARCLIGHT_LOGGER.info("player.command-issued", this.player.getScoreboardName(), s);
+            FRESHWATERFISH_LOG.info("player.command-issued", this.player.getScoreboardName(), s);
         }
         CraftPlayer player = this.getCraftPlayer();
         PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent(player, s, new LazyPlayerSet(this.server));
@@ -983,9 +983,9 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
     private void broadcastChatMessage(PlayerChatMessage playerchatmessage) {
         String s = playerchatmessage.signedContent();
         if (s == null || s.isEmpty()) {
-            ARCLIGHT_LOGGER.warn("chat.empty-message", this.player.getScoreboardName());
+            FRESHWATERFISH_LOG.warn("chat.empty-message", this.player.getScoreboardName());
         } else if (s.length() > 256) { // Validate message length
-            ARCLIGHT_LOGGER.warn("chat.message-too-long", this.player.getScoreboardName(), s.length());
+            FRESHWATERFISH_LOG.warn("chat.message-too-long", this.player.getScoreboardName(), s.length());
             this.disconnect("chat.message-too-long");
         } else if (getCraftPlayer().isConversing()) {
             final String conversationInput = s;
@@ -1140,7 +1140,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
 
                                 if (d11 - d10 > Math.max(f2, Math.pow(SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed, 2)) && !this.isSingleplayerOwner()) {
                                     // CraftBukkit end
-                                    ARCLIGHT_LOGGER.warn("moved-too-quickly", this.player.getName().getString(), d7, d8, d9);
+                                    FRESHWATERFISH_LOG.warn("moved-too-quickly", this.player.getName().getString(), d7, d8, d9);
                                     this.teleport(this.player.getX(), this.player.getY(), this.player.getZ(), this.player.getYRot(), this.player.getXRot());
                                     return;
                                 }
@@ -1173,7 +1173,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
 
                             if (!this.player.isChangingDimension() && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.gameMode.isCreative() && this.player.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) { // Spigot
                                 flag1 = true;
-                                ARCLIGHT_LOGGER.warn("moved-wrongly", this.player.getName().getString());
+                                FRESHWATERFISH_LOG.warn("moved-wrongly", this.player.getName().getString());
                             }
 
                             if (!this.player.noPhysics && !this.player.isSleeping() && (flag1 && worldserver.noCollision(this.player, axisalignedbb) || this.isPlayerCollidingWithAnythingNew(worldserver, axisalignedbb, d0, d1, d2))) {
@@ -1692,14 +1692,14 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
                 if (packet.identifier.equals(CUSTOM_REGISTER)) {
                     try {
                         if (buf.length > 32767) { // Reasonable limit for channel names
-                            ARCLIGHT_LOGGER.warn("custom-payload.register-too-large", buf.length);
+                            FRESHWATERFISH_LOG.warn("custom-payload.register-too-large", buf.length);
                             this.disconnect("Invalid payload REGISTER!");
                             return;
                         }
 
                         String channels = new String(buf, StandardCharsets.UTF_8);
                         if (channels.length() > 32767) { // Additional safety check
-                            ARCLIGHT_LOGGER.warn("custom-payload.register-string-too-long", channels.length());
+                            FRESHWATERFISH_LOG.warn("custom-payload.register-string-too-long", channels.length());
                             this.disconnect("Invalid payload REGISTER!");
                             return;
                         }
@@ -1710,20 +1710,20 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
                             }
                         }
                     } catch (Exception ex) {
-                        ARCLIGHT_LOGGER.error("custom-payload.register-error", ex);
+                        FRESHWATERFISH_LOG.error("custom-payload.register-error", ex);
                         this.disconnect("Invalid payload REGISTER!");
                     }
                 } else if (packet.identifier.equals(CUSTOM_UNREGISTER)) {
                     try {
                         if (buf.length > 32767) { // Reasonable limit for channel names
-                            ARCLIGHT_LOGGER.warn("custom-payload.unregister-too-large", buf.length);
+                            FRESHWATERFISH_LOG.warn("custom-payload.unregister-too-large", buf.length);
                             this.disconnect("Invalid payload UNREGISTER!");
                             return;
                         }
 
                         final String channels = new String(buf, StandardCharsets.UTF_8);
                         if (channels.length() > 32767) { // Additional safety check
-                            ARCLIGHT_LOGGER.warn("custom-payload.unregister-string-too-long", channels.length());
+                            FRESHWATERFISH_LOG.warn("custom-payload.unregister-string-too-long", channels.length());
                             this.disconnect("Invalid payload UNREGISTER!");
                             return;
                         }
@@ -1734,14 +1734,14 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
                             }
                         }
                     } catch (Exception ex) {
-                        ARCLIGHT_LOGGER.error("custom-payload.unregister-error", ex);
+                        FRESHWATERFISH_LOG.error("custom-payload.unregister-error", ex);
                         this.disconnect("Invalid payload UNREGISTER!");
                     }
                 } else {
                     try {
                         this.cserver.getMessenger().dispatchIncomingMessage(((ServerPlayerEntityBridge) this.player).bridge$getBukkitEntity(), packet.identifier.toString(), buf);
                     } catch (Exception ex) {
-                        ARCLIGHT_LOGGER.error("custom-payload.dispatch-failed", ex);
+                        FRESHWATERFISH_LOG.error("custom-payload.dispatch-failed", ex);
                         this.disconnect("Invalid custom payload!");
                     }
                 }
@@ -1868,7 +1868,7 @@ public abstract class ServerPlayNetHandlerMixin implements ServerPlayNetHandlerB
                         }
                     } else {
                         disconnect(Component.translatable("multiplayer.disconnect.invalid_entity_attacked"));
-                        ARCLIGHT_LOGGER.warn("attack-invalid-entity", player.getName().getString());
+                        FRESHWATERFISH_LOG.warn("attack-invalid-entity", player.getName().getString());
                     }
                 }
             }

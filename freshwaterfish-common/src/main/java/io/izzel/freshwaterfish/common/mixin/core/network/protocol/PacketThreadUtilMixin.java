@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PacketUtils.class)
 public class PacketThreadUtilMixin {
-    private static final org.apache.logging.log4j.Logger ARCLIGHT_LOGGER = io.izzel.freshwaterfish.common.mod.util.log.FreshwaterFishI18nLogger.getLogger("PacketThreadUtil");
+    private static final org.apache.logging.log4j.Logger FRESHWATERFISH_LOG = io.izzel.freshwaterfish.common.mod.util.log.FreshwaterFishI18nLogger.getLogger("PacketThreadUtil");
 
 
     @Shadow
@@ -43,7 +43,7 @@ public class PacketThreadUtilMixin {
                         if (processor.shouldPropagateHandlingExceptions()) {
                             throw exception;
                         }
-                        ARCLIGHT_LOGGER.error("network.packet.handle-failed", packetIn, exception);
+                        FRESHWATERFISH_LOG.error("network.packet.handle-failed", packetIn, exception);
                     }
                 } else {
                     LOGGER.debug("Ignoring packet due to disconnection: " + packetIn);

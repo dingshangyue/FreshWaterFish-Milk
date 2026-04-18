@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class ComponentBridgeHandler {
 
     private static final Logger LOGGER = LogManager.getLogger("FreshwaterFish");
-    private static final Logger ARCLIGHT_LOGGER = FreshwaterFishI18nLogger.getLogger("ComponentBridge");
+    private static final Logger FRESHWATERFISH_LOG = FreshwaterFishI18nLogger.getLogger("ComponentBridge");
     private static final ConcurrentMap<Class<?>, Method> METHOD_CACHE = new ConcurrentHashMap<>();
     private static volatile boolean initialized = false;
 
@@ -63,10 +63,10 @@ public class ComponentBridgeHandler {
                 METHOD_CACHE.put(componentClass, getSiblingsMethod);
                 LOGGER.debug("ComponentBridgeHandler initialized successfully with method: " + getSiblingsMethod.getName());
             } else {
-                ARCLIGHT_LOGGER.error("component.bridge.method-not-found");
+                FRESHWATERFISH_LOG.error("component.bridge.method-not-found");
             }
         } catch (Exception e) {
-            ARCLIGHT_LOGGER.error("component.bridge.init-failed", e.getMessage());
+            FRESHWATERFISH_LOG.error("component.bridge.init-failed", e.getMessage());
             e.printStackTrace();
         } finally {
             // Always mark as initialized to prevent infinite retry loops
@@ -94,7 +94,7 @@ public class ComponentBridgeHandler {
                 }
             }
         } catch (Exception e) {
-            ARCLIGHT_LOGGER.error("component.bridge.get-siblings-failed", e.getMessage());
+            FRESHWATERFISH_LOG.error("component.bridge.get-siblings-failed", e.getMessage());
         }
 
         // Fallback to empty list
@@ -138,7 +138,7 @@ public class ComponentBridgeHandler {
             }
             return flattened.stream();
         } catch (Exception e) {
-            ARCLIGHT_LOGGER.error("component.bridge.create-stream-failed", e.getMessage());
+            FRESHWATERFISH_LOG.error("component.bridge.create-stream-failed", e.getMessage());
             return Stream.of(component);
         }
     }
@@ -156,7 +156,7 @@ public class ComponentBridgeHandler {
         try {
             return createStream(component).iterator();
         } catch (Exception e) {
-            ARCLIGHT_LOGGER.error("component.bridge.create-iterator-failed", e.getMessage());
+            FRESHWATERFISH_LOG.error("component.bridge.create-iterator-failed", e.getMessage());
             return List.of(component).iterator();
         }
     }

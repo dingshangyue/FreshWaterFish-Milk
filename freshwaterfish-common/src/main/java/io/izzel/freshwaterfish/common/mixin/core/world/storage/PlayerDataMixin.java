@@ -21,7 +21,7 @@ import java.io.FileInputStream;
 
 @Mixin(PlayerDataStorage.class)
 public class PlayerDataMixin implements PlayerDataBridge {
-    private static final org.apache.logging.log4j.Logger ARCLIGHT_LOGGER = io.izzel.freshwaterfish.common.mod.util.log.FreshwaterFishI18nLogger.getLogger("PlayerData");
+    private static final org.apache.logging.log4j.Logger FRESHWATERFISH_LOG = io.izzel.freshwaterfish.common.mod.util.log.FreshwaterFishI18nLogger.getLogger("PlayerData");
 
 
     @Shadow
@@ -54,7 +54,7 @@ public class PlayerDataMixin implements PlayerDataBridge {
                 return NbtIo.readCompressed(new FileInputStream(file1));
             }
         } catch (Exception exception) {
-            ARCLIGHT_LOGGER.warn("player.data.load-failed", uuid);
+            FRESHWATERFISH_LOG.warn("player.data.load-failed", uuid);
         }
         return null;
     }

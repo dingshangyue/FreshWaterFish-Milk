@@ -1,4 +1,4 @@
-﻿auth:
+auth:
   exception-verifying: 验证 {} 时发生异常
   exception-verifying-player: 验证玩家 {} 时发生异常
   invalid-session: 用户名 '{}' 尝试使用无效会话加入
@@ -248,7 +248,7 @@ logo:
   - '    §6 / /___/ /_/ / / / / / / / / / / /_/ / /  / /_/ / '
   - '    §e/_____/\__,_/_/ /_/ /_/_/_/ /_/\__,_/_/   \__,_/  '
   - ''
-  - '    §eFreshwaterFish·流明纳拉 服务端 By§b QianMo0721'
+  - '    §eFreshwaterFish 服务端 By§b QianMo0721'
   - '    §a运行版本 {} / {}'
   - '    §a构建日期 {}'
   - ''

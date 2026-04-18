@@ -28,7 +28,7 @@ import java.util.List;
 
 @Mixin(LootTable.class)
 public abstract class LootTableMixin implements LootTableBridge {
-    private static final org.apache.logging.log4j.Logger ARCLIGHT_LOGGER = io.izzel.freshwaterfish.common.mod.util.log.FreshwaterFishI18nLogger.getLogger("LootTable");
+    private static final org.apache.logging.log4j.Logger FRESHWATERFISH_LOG = io.izzel.freshwaterfish.common.mod.util.log.FreshwaterFishI18nLogger.getLogger("LootTable");
 
 
     @Shadow
@@ -78,7 +78,7 @@ public abstract class LootTableMixin implements LootTableBridge {
 
         for (ItemStack itemstack : objectarraylist) {
             if (list.isEmpty()) {
-                ARCLIGHT_LOGGER.warn("loot.container.overfill-attempt");
+                FRESHWATERFISH_LOG.warn("loot.container.overfill-attempt");
                 return;
             }
 

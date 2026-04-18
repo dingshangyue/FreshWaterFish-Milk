@@ -94,7 +94,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
     private static final int TPS = 20;
     private static final int TICK_TIME = 1000000000 / TPS;
     private static final int SAMPLE_INTERVAL = 100;
-    private static final org.apache.logging.log4j.Logger ARCLIGHT_LOGGER = FreshwaterFishI18nLogger.getLogger("MinecraftServer");
+    private static final org.apache.logging.log4j.Logger FRESHWATERFISH_LOG = FreshwaterFishI18nLogger.getLogger("MinecraftServer");
     @Shadow
     @Final
     static Logger LOGGER;
@@ -270,7 +270,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
     @Overwrite
     protected void runServer() {
         try {
-            ARCLIGHT_LOGGER.info("server.starting");
+            FRESHWATERFISH_LOG.info("server.starting");
             if (!this.initServer()) {
                 throw new IllegalStateException("Failed to initialize server");
             }
@@ -289,7 +289,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                     long j = i / 50L;
 
                     if (server.getWarnOnOverload()) {
-                        ARCLIGHT_LOGGER.warn("server.overload-warning", i, j);
+                        FRESHWATERFISH_LOG.warn("server.overload-warning", i, j);
                     }
 
                     this.nextTickTime += j * 50L;
@@ -324,11 +324,11 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                 this.isReady = true;
                 JvmProfiler.INSTANCE.onServerTick(this.averageTickTime);
             }
-            ARCLIGHT_LOGGER.info("server.stopping");
+            FRESHWATERFISH_LOG.info("server.stopping");
             ServerLifecycleHooks.handleServerStopping((MinecraftServer) (Object) this);
             ServerLifecycleHooks.expectServerStopped(); // has to come before finalTick to avoid race conditions
         } catch (Throwable throwable1) {
-            ARCLIGHT_LOGGER.error("server.unexpected-exception", throwable1);
+            FRESHWATERFISH_LOG.error("server.unexpected-exception", throwable1);
             CrashReport crashreport = constructOrExtractCrashReport(throwable1);
             this.fillSystemReport(crashreport.getSystemReport());
 
@@ -341,14 +341,14 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                 // Original behavior - stop the server
                 File file1 = new File(new File(this.getServerDirectory(), "crash-reports"), "crash-" + Util.getFilenameFormattedDateTime() + "-server.txt");
                 if (crashreport.saveToFile(file1)) {
-                    ARCLIGHT_LOGGER.error("server.crash-report-saved", file1.getAbsolutePath());
+                    FRESHWATERFISH_LOG.error("server.crash-report-saved", file1.getAbsolutePath());
                 } else {
-                    ARCLIGHT_LOGGER.error("server.crash-report-failed");
+                    FRESHWATERFISH_LOG.error("server.crash-report-failed");
                 }
                 this.onServerCrash(crashreport);
             } else {
                 // Continue running - log but don't crash
-                ARCLIGHT_LOGGER.warn("server.continuing-after-crash");
+                FRESHWATERFISH_LOG.warn("server.continuing-after-crash");
             }
 
             net.minecraftforge.server.ServerLifecycleHooks.expectServerStopped(); // Forge: Has to come before MinecraftServer#onServerCrash to avoid race conditions
@@ -358,7 +358,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                 this.stopped = true;
                 this.stopServer();
             } catch (Throwable throwable) {
-                ARCLIGHT_LOGGER.error("server.stop-exception", throwable);
+                FRESHWATERFISH_LOG.error("server.stop-exception", throwable);
             } finally {
                 if (this.services.profileCache() != null) {
                     this.services.profileCache().clearExecutor();
@@ -367,7 +367,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                 // Shutdown async world save executor
                 freshwaterfish$shutdownAsyncSaveExecutor();
                 ServerLifecycleHooks.handleServerStopped((MinecraftServer) (Object) this);
-                ARCLIGHT_LOGGER.info("server.stopped");
+                FRESHWATERFISH_LOG.info("server.stopped");
                 this.onServerExit();
             }
         }
@@ -395,7 +395,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
     @Inject(method = "stopServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;saveAllChunks(ZZZ)Z"))
     public void freshwaterfish$asyncWorldSave(CallbackInfo ci) {
         if (io.izzel.freshwaterfish.i18n.FreshwaterFishConfig.spec().getAsyncWorldSave().isEnabled()) {
-            ARCLIGHT_LOGGER.info("server.async-world-save.starting-shutdown");
+            FRESHWATERFISH_LOG.info("server.async-world-save.starting-shutdown");
             freshwaterfish$saveAllWorldsAsync(true, true, true); // suppressLog = true to avoid duplicate message
         }
 
@@ -416,7 +416,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                     this.getServerDirectory()
             );
         } catch (Exception e) {
-            ARCLIGHT_LOGGER.error("Failed to initialize metrics", e);
+            FRESHWATERFISH_LOG.error("Failed to initialize metrics", e);
         }
     }
 
@@ -479,8 +479,8 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
 
         ServerLevel serverworld = this.overworld();
         this.forceTicks = true;
-        ARCLIGHT_LOGGER.info("world.loading", serverworld.dimension().location());
-        ARCLIGHT_LOGGER.info("server.preparing-start-region", serverworld.dimension().location());
+        FRESHWATERFISH_LOG.info("world.loading", serverworld.dimension().location());
+        FRESHWATERFISH_LOG.info("server.preparing-start-region", serverworld.dimension().location());
         BlockPos blockpos = serverworld.getSharedSpawnPos();
         listener.updateSpawnPos(new ChunkPos(blockpos));
         ServerChunkCache serverchunkprovider = serverworld.getChunkSource();
@@ -512,7 +512,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                 }
             }
             Bukkit.getPluginManager().callEvent(new WorldLoadEvent(((WorldBridge) serverWorld).bridge$getWorld()));
-            ARCLIGHT_LOGGER.info("world.loaded", ((WorldBridge) serverWorld).bridge$getWorld().getName());
+            FRESHWATERFISH_LOG.info("world.loaded", ((WorldBridge) serverWorld).bridge$getWorld().getName());
         }
 
         this.executeModerately();
@@ -525,7 +525,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
     public void initWorld(ServerLevel serverWorld, ServerLevelData worldInfo, WorldData saveData, WorldOptions worldOptions) {
         var config = io.izzel.freshwaterfish.i18n.FreshwaterFishConfig.spec().getOptimization().getWorldCreation();
 
-        ARCLIGHT_LOGGER.info("world.creating", ((WorldBridge) serverWorld).bridge$getWorld().getName());
+        FRESHWATERFISH_LOG.info("world.creating", ((WorldBridge) serverWorld).bridge$getWorld().getName());
 
         boolean flag = saveData.isDebugWorld();
         if (((WorldBridge) serverWorld).bridge$getGenerator() != null) {
@@ -560,7 +560,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
             worldInfo.setInitialized(true);
         }
 
-        ARCLIGHT_LOGGER.info("world.created", ((WorldBridge) serverWorld).bridge$getWorld().getName());
+        FRESHWATERFISH_LOG.info("world.created", ((WorldBridge) serverWorld).bridge$getWorld().getName());
     }
 
     // bukkit methods
@@ -571,7 +571,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
             return;
         }
         this.forceTicks = true;
-        ARCLIGHT_LOGGER.info("server.preparing-start-region", serverWorld.dimension().location());
+        FRESHWATERFISH_LOG.info("server.preparing-start-region", serverWorld.dimension().location());
         BlockPos blockpos = serverWorld.getSharedSpawnPos();
         listener.updateSpawnPos(new ChunkPos(blockpos));
         ServerChunkCache serverchunkprovider = serverWorld.getChunkSource();
@@ -634,7 +634,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
         List<CompletableFuture<Void>> saveTasks = new ArrayList<>();
 
         if (!suppressLog) {
-            ARCLIGHT_LOGGER.info("server.async-world-save.starting");
+            FRESHWATERFISH_LOG.info("server.async-world-save.starting");
         }
 
         // Create async save tasks for each world
@@ -643,7 +643,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                 try {
                     freshwaterfish$saveWorldAsync(level, suppressLog, flush, forced);
                 } catch (Exception e) {
-                    ARCLIGHT_LOGGER.error("server.world-save.failed", level.dimension().location(), e);
+                    FRESHWATERFISH_LOG.error("server.world-save.failed", level.dimension().location(), e);
                 }
             }, ASYNC_SAVE_EXECUTOR);
 
@@ -661,10 +661,10 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
                 allTasks.get(timeoutSeconds, TimeUnit.SECONDS);
 
                 if (!suppressLog) {
-                    ARCLIGHT_LOGGER.info("server.world-save.all-successful");
+                    FRESHWATERFISH_LOG.info("server.world-save.all-successful");
                 }
             } catch (Exception e) {
-                ARCLIGHT_LOGGER.warn("server.async-world-save.timeout-or-failed", e);
+                FRESHWATERFISH_LOG.warn("server.async-world-save.timeout-or-failed", e);
             }
         }
     }
@@ -674,7 +674,7 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
      */
     private void freshwaterfish$saveWorldAsync(ServerLevel level, boolean suppressLog, boolean flush, boolean forced) {
         if (!suppressLog) {
-            ARCLIGHT_LOGGER.debug("world.saving", level.dimension().location());
+            FRESHWATERFISH_LOG.debug("world.saving", level.dimension().location());
         }
 
         try {
@@ -682,10 +682,10 @@ public abstract class MinecraftServerMixin extends ReentrantBlockableEventLoop<T
             level.save(null, flush, level.noSave && !forced);
 
             if (!suppressLog) {
-                ARCLIGHT_LOGGER.debug("world.saved-successfully", level.dimension().location());
+                FRESHWATERFISH_LOG.debug("world.saved-successfully", level.dimension().location());
             }
         } catch (Exception e) {
-            ARCLIGHT_LOGGER.error("world.save-error", level.dimension().location(), e);
+            FRESHWATERFISH_LOG.error("world.save-error", level.dimension().location(), e);
         }
     }
 

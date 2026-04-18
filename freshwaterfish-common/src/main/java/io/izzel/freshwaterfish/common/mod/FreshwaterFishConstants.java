@@ -16,7 +16,7 @@ public class FreshwaterFishConstants {
     /**
      * FreshwaterFish marker magic value for non-used custom dimension
      */
-    public static final int ARCLIGHT_DIMENSION = 0xA2c11947;
+    public static final int FRESHWATERFISH_CUSTOM_DIMENSION_MARKER = 0xA2c11947;
 
     public static int currentTick;
 

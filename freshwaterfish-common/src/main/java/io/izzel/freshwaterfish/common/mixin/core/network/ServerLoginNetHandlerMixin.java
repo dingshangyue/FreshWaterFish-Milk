@@ -59,11 +59,11 @@ import static net.minecraft.server.network.ServerLoginPacketListenerImpl.isValid
 @Mixin(ServerLoginPacketListenerImpl.class)
 public abstract class ServerLoginNetHandlerMixin {
 
-    private static final org.apache.logging.log4j.Logger ARCLIGHT_LOGGER = FreshwaterFishI18nLogger.getLogger("ServerLoginNetHandler");
+    private static final org.apache.logging.log4j.Logger FRESHWATERFISH_LOG = FreshwaterFishI18nLogger.getLogger("ServerLoginNetHandler");
 
     // Velocity Modern Forwarding constants/state
-    private static final int LUMINARA_VELOCITY_QUERY_ID = 1203961429; // same as PCF
-    private static final ResourceLocation LUMINARA_VELOCITY_CHANNEL = new ResourceLocation("velocity", "player_info");
+    private static final int FRESHWATERFISH_VELOCITY_QUERY_ID = 1203961429; // same as PCF
+    private static final ResourceLocation FRESHWATERFISH_VELOCITY_CHANNEL = new ResourceLocation("velocity", "player_info");
     @Shadow
     @Final
     private static AtomicInteger UNIQUE_THREAD_ID;
@@ -137,7 +137,7 @@ public abstract class ServerLoginNetHandlerMixin {
                     this.server.getPlayerList().placeNewPlayer(this.connection, entity);
                 }
             } catch (Exception exception) {
-                ARCLIGHT_LOGGER.error("player.place-in-world-failed", exception);
+                FRESHWATERFISH_LOG.error("player.place-in-world-failed", exception);
                 var chatmessage = Component.translatable("multiplayer.disconnect.invalid_player_data");
 
                 this.connection.send(new ClientboundDisconnectPacket(chatmessage));
@@ -160,10 +160,10 @@ public abstract class ServerLoginNetHandlerMixin {
         if (FreshwaterFishConfig.spec().getVelocity() != null && FreshwaterFishConfig.spec().getVelocity().isEnabled() && !this.server.usesAuthentication()) {
             this.freshwaterfish$velocityListen = true;
             try {
-                this.connection.send(new ClientboundCustomQueryPacket(LUMINARA_VELOCITY_QUERY_ID, LUMINARA_VELOCITY_CHANNEL, new FriendlyByteBuf(Unpooled.EMPTY_BUFFER)));
-                ARCLIGHT_LOGGER.info("velocity.forwarding.enabled-for-player", packetIn.name(), false);
+                this.connection.send(new ClientboundCustomQueryPacket(FRESHWATERFISH_VELOCITY_QUERY_ID, FRESHWATERFISH_VELOCITY_CHANNEL, new FriendlyByteBuf(Unpooled.EMPTY_BUFFER)));
+                FRESHWATERFISH_LOG.info("velocity.forwarding.enabled-for-player", packetIn.name(), false);
             } catch (Throwable t) {
-                ARCLIGHT_LOGGER.warn("velocity.query.send-failed", t);
+                FRESHWATERFISH_LOG.warn("velocity.query.send-failed", t);
             }
             return;
         }
@@ -191,7 +191,7 @@ public abstract class ServerLoginNetHandlerMixin {
                             freshwaterfish$preLogin();
                         } catch (Exception ex) {
                             disconnect("Failed to verify username!");
-                            ARCLIGHT_LOGGER.warn("auth.exception-verifying", gameProfile.getName(), ex);
+                            FRESHWATERFISH_LOG.warn("auth.exception-verifying", gameProfile.getName(), ex);
                         }
                     }
                 }
@@ -259,21 +259,21 @@ public abstract class ServerLoginNetHandlerMixin {
                         }
                         freshwaterfish$preLogin();
                     } else if (server.isSingleplayer()) {
-                        ARCLIGHT_LOGGER.warn("auth.verification-failed-allow");
+                        FRESHWATERFISH_LOG.warn("auth.verification-failed-allow");
                         gameProfile = createFakeProfile(gameprofile);
                         state = ServerLoginPacketListenerImpl.State.NEGOTIATING;
                     } else {
                         disconnect(Component.translatable("multiplayer.disconnect.unverified_username"));
-                        ARCLIGHT_LOGGER.error("auth.invalid-session", gameprofile.getName());
+                        FRESHWATERFISH_LOG.error("auth.invalid-session", gameprofile.getName());
                     }
                 } catch (Exception var3) {
                     if (server.isSingleplayer()) {
-                        ARCLIGHT_LOGGER.warn("auth.servers-down-allow");
+                        FRESHWATERFISH_LOG.warn("auth.servers-down-allow");
                         gameProfile = createFakeProfile(gameprofile);
                         state = ServerLoginPacketListenerImpl.State.NEGOTIATING;
                     } else {
                         disconnect(Component.translatable("multiplayer.disconnect.authservers_down"));
-                        ARCLIGHT_LOGGER.error("auth.servers-unavailable");
+                        FRESHWATERFISH_LOG.error("auth.servers-unavailable");
                     }
                 }
 
@@ -321,9 +321,9 @@ public abstract class ServerLoginNetHandlerMixin {
             return;
         }
         if (FreshwaterFishConfig.spec().getVelocity() != null && FreshwaterFishConfig.spec().getVelocity().isEnabled()) {
-            ARCLIGHT_LOGGER.info("auth.player-uuid-velocity", gameProfile.getName(), gameProfile.getId());
+            FRESHWATERFISH_LOG.info("auth.player-uuid-velocity", gameProfile.getName(), gameProfile.getId());
         } else {
-            ARCLIGHT_LOGGER.info("auth.player-uuid", gameProfile.getName(), gameProfile.getId());
+            FRESHWATERFISH_LOG.info("auth.player-uuid", gameProfile.getName(), gameProfile.getId());
         }
         state = ServerLoginPacketListenerImpl.State.NEGOTIATING;
     }
@@ -341,7 +341,7 @@ public abstract class ServerLoginNetHandlerMixin {
                     freshwaterfish$preLogin();
                 } catch (Exception ex) {
                     disconnect("Failed to verify username!");
-                    ARCLIGHT_LOGGER.warn("auth.exception-verifying-player", gameProfile.getName(), ex);
+                    FRESHWATERFISH_LOG.warn("auth.exception-verifying-player", gameProfile.getName(), ex);
                 }
             }
         };
@@ -374,19 +374,19 @@ public abstract class ServerLoginNetHandlerMixin {
         if (!this.freshwaterfish$velocityListen) return;
         try {
             int id = freshwaterfish$getTransactionId(packet);
-            if (id != LUMINARA_VELOCITY_QUERY_ID) return;
+            if (id != FRESHWATERFISH_VELOCITY_QUERY_ID) return;
             this.freshwaterfish$velocityListen = false;
 
             FriendlyByteBuf data = freshwaterfish$getPacketData(packet);
             if (data == null) {
-                ARCLIGHT_LOGGER.warn("velocity.query.null-response");
+                FRESHWATERFISH_LOG.warn("velocity.query.null-response");
                 disconnect(Component.literal("Direct connections to this server are not permitted!"));
                 ci.cancel();
                 return;
             }
 
             if (!freshwaterfish$validateVelocity(data)) {
-                ARCLIGHT_LOGGER.warn("velocity.signature.mismatch");
+                FRESHWATERFISH_LOG.warn("velocity.signature.mismatch");
                 disconnect(Component.literal("Direct connections to this server are not permitted!"));
                 ci.cancel();
                 return;
@@ -399,10 +399,10 @@ public abstract class ServerLoginNetHandlerMixin {
             // After Velocity forwarding, backend must not perform client encryption
             freshwaterfish$continueLogin();
 
-            ARCLIGHT_LOGGER.info("velocity.forwarding.player-processed-successfully", this.gameProfile.getName(), false);
+            FRESHWATERFISH_LOG.info("velocity.forwarding.player-processed-successfully", this.gameProfile.getName(), false);
             ci.cancel();
         } catch (Throwable t) {
-            ARCLIGHT_LOGGER.warn("velocity.login.exception-processing", this.gameProfile != null ? this.gameProfile.getName() : "unknown", t);
+            FRESHWATERFISH_LOG.warn("velocity.login.exception-processing", this.gameProfile != null ? this.gameProfile.getName() : "unknown", t);
             disconnect(Component.literal("Direct connections to this server are not permitted!"));
             ci.cancel();
         }
@@ -421,7 +421,7 @@ public abstract class ServerLoginNetHandlerMixin {
             byte[] computed = mac.doFinal(rest);
             return MessageDigest.isEqual(signature, computed);
         } catch (Exception e) {
-            ARCLIGHT_LOGGER.warn("velocity.signature.verification-error", e);
+            FRESHWATERFISH_LOG.warn("velocity.signature.verification-error", e);
             return false;
         }
     }
@@ -439,7 +439,7 @@ public abstract class ServerLoginNetHandlerMixin {
             int port = current instanceof InetSocketAddress ? ((InetSocketAddress) current).getPort() : 0;
             ((NetworkManagerBridge) this.connection).bridge$setVelocityAddress(new InetSocketAddress(ip, port));
         } catch (Throwable t) {
-            ARCLIGHT_LOGGER.warn("velocity.address.reflection-failed-trying-bridge", t);
+            FRESHWATERFISH_LOG.warn("velocity.address.reflection-failed-trying-bridge", t);
         }
         // UUID + name
         UUID uuid = data.readUUID();

@@ -48,7 +48,7 @@ import java.util.function.UnaryOperator;
 @Mixin(SignBlockEntity.class)
 public abstract class SignBlockEntityMixin extends BlockEntityMixin implements SignTileEntityBridge, CommandSource, ICommandSourceBridge {
 
-    private static final org.apache.logging.log4j.Logger ARCLIGHT_LOGGER = FreshwaterFishI18nLogger.getLogger("SignBlockEntity");
+    private static final org.apache.logging.log4j.Logger FRESHWATERFISH_LOG = FreshwaterFishI18nLogger.getLogger("SignBlockEntity");
 
     @Shadow
     @Final
@@ -84,7 +84,7 @@ public abstract class SignBlockEntityMixin extends BlockEntityMixin implements S
             this.setAllowedPlayerEditor(null);
             this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
         } else {
-            ARCLIGHT_LOGGER.warn("sign.non-editable-warning", p_278048_.getName().getString());
+            FRESHWATERFISH_LOG.warn("sign.non-editable-warning", p_278048_.getName().getString());
             ((ServerPlayer) p_278048_).connection.send(this.getUpdatePacket());
         }
     }

@@ -34,7 +34,7 @@ import java.util.Optional;
 @Mixin(RecipeManager.class)
 public abstract class RecipeManagerMixin implements RecipeManagerBridge {
 
-    private static final Logger ARCLIGHT_LOGGER = FreshwaterFishI18nLogger.getLogger("RecipeManager");
+    private static final Logger FRESHWATERFISH_LOG = FreshwaterFishI18nLogger.getLogger("RecipeManager");
 
     // @formatter:off
     @Shadow public Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes;
@@ -80,7 +80,7 @@ public abstract class RecipeManagerMixin implements RecipeManagerBridge {
     private Recipe<?> freshwaterfish$fromJsonForge(ResourceLocation recipeId, JsonObject json, ICondition.IContext context) {
         Recipe<?> recipe = RecipeManager.fromJson(recipeId, json, context);
         if (recipe == null) {
-            ARCLIGHT_LOGGER.info("recipe.loading.skip-null-serializer", recipeId);
+            FRESHWATERFISH_LOG.info("recipe.loading.skip-null-serializer", recipeId);
         }
         return recipe;
     }
@@ -94,7 +94,7 @@ public abstract class RecipeManagerMixin implements RecipeManagerBridge {
             require = 0
     )
     private void freshwaterfish$logParsingError(org.slf4j.Logger logger, String message, Object recipeId, Object exception) {
-        ARCLIGHT_LOGGER.error("recipe.loading.parsing-error", recipeId, exception);
+        FRESHWATERFISH_LOG.error("recipe.loading.parsing-error", recipeId, exception);
     }
 
     @Redirect(
@@ -106,7 +106,7 @@ public abstract class RecipeManagerMixin implements RecipeManagerBridge {
             require = 0
     )
     private void freshwaterfish$logLoadedRecipes(org.slf4j.Logger logger, String message, Object count) {
-        ARCLIGHT_LOGGER.info("recipe.loading.completed", count);
+        FRESHWATERFISH_LOG.info("recipe.loading.completed", count);
     }
 
     /**

@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "net.minecraft.network.protocol.game.ClientboundCommandsPacket$ArgumentNodeStub")
 public class ClientboundCommandsPacket_ArgumentNodeStubMixin {
 
-    private static final int ARCLIGHT_WRAP_INDEX = -256;
+    private static final int FRESHWATERFISH_WRAP_INDEX = -256;
 
     @Inject(method = "serializeCap(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo;Lnet/minecraft/commands/synchronization/ArgumentTypeInfo$Template;)V",
             cancellable = true, at = @At("HEAD"))
@@ -36,7 +36,7 @@ public class ClientboundCommandsPacket_ArgumentNodeStubMixin {
             return;
         }
         ci.cancel();
-        buf.writeVarInt(ARCLIGHT_WRAP_INDEX);
+        buf.writeVarInt(FRESHWATERFISH_WRAP_INDEX);
         //noinspection deprecation
         var id = BuiltInRegistries.COMMAND_ARGUMENT_TYPE.getId(type);
         if (id == -1) {
